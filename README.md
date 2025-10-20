@@ -29,11 +29,11 @@ If a suitable painful cat dataset cannot be obtained (Plan A):
 2)	Select Action Units (AUs) to prioritise depending on the size of the database. If it is on the smaller side (perhaps 1000 images or less), prioritise the eyes, muzzle ratio and ear angle. This is as Feline Grimace Scale (FGS) scorers had the most agreement with each other using these features. (Cayetano Evangelista, 2018) Add whiskers, head positions, and other FGS features later (post MVP). The idea behind this is that facial feature mapping can be very time-consuming and it may be unrealistic to complete the entire face by December.
 3)	Calculate and use ratios to predict painful or pain-free classification. (Cayetano Evangelista, 2018) This takes away the reliance of needing a painful database.
 4)	Later, if we get a painful cat dataset, we can use it to test the model.
+
 If a suitable painful cat dataset can be obtained (Plan B):
 1)	Either do the same as above but with earlier testing against the painful cat database, OR:
 2)	Use something like a heat map CNN to highlight the areas flagged as ‘important’ to the CNN.
-3)	See if the areas flagged up by the heat map are the same areas flagged by the Feline Grimace Scale, give a predicted classification (pain-free or painful, and if possible what level on the Feline Grimace Scale), and then show the user the relevant FGS guidance to see if their analysis agrees.
-a.	The idea is, if the heat map lights up areas it sees as relevant to pain in cats (like a tightened muzzle), it will flag up what has resulted in the pain score and the user can check.
+3)	See if the areas flagged up by the heat map are the same areas flagged by the Feline Grimace Scale, give a predicted classification (pain-free or painful, and if possible what level on the Feline Grimace Scale), and then show the user the relevant FGS guidance to see if their analysis agrees. The idea is, if the heat map lights up areas it sees as relevant to pain in cats (like a tightened muzzle), it will flag up what has resulted in the pain score and the user can check.
 
 If a proof of concept of the idea can be created by March, it would be ideal to create a web app that users could test this on. 
 
