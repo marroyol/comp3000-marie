@@ -1,5 +1,5 @@
 # comp3000
-
+TODO: Update with current project information
 ## Project Title
 Automating feline pain detection using facial analysis and machine learning
 
