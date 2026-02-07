@@ -1,0 +1,3 @@
+#### 5 February 2026
+
+Next step discussed was to create the code to calculate the likelihood of a cat being painful, given the relevant facial landmarks.  The hypothesis is that if the ear tips/bases ratio, the eyes height/width ratio, the muzzle height/width ratio, the medial ear angles, and the lateral ear angles are calculated (based on Evangelista et. al's work), then an accurate estimate of whether or not the cat is painful can be made. 
