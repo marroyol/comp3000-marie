@@ -209,3 +209,7 @@ __marimo__/
 # Dataset
 data/images/
 data/labels/
+
+# Testing
+notebooks/computations_testing.ipynb
+notebooks/*_testing.ipynb

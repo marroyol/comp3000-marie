@@ -8,7 +8,15 @@ from typing import Dict, List
 LANDMARK_INDEX_MAP: Dict[int, str] = {
     24: "left_ear_tip",
     29: "right_ear_tip",
+    26: "left_ear_base",
+    27: "right_ear_base",
+    6: "left_eye_middle_top",
+    7: "left_eye_middle_bottom",
+    10: "right_eye_middle_top",
+    11: "right_eye_middle_bottom"
 }
+
+# 8 is actually right outer eye and 9 right inner eye i think
 
 # String to index mapping
 LANDMARK_NAME_MAP: Dict[int, str] = {}
