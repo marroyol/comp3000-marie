@@ -13,7 +13,11 @@ LANDMARK_INDEX_MAP: Dict[int, str] = {
     6: "left_eye_middle_top",
     7: "left_eye_middle_bottom",
     10: "right_eye_middle_top",
-    11: "right_eye_middle_bottom"
+    11: "right_eye_middle_bottom",
+    9: "right_eye_inner_corner",
+    8: "right_eye_outer_corner",
+    5: "left_eye_inner_corner",
+    4: "left_eye_outer_corner"
 }
 
 # 8 is actually right outer eye and 9 right inner eye i think

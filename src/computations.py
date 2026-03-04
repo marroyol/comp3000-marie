@@ -61,3 +61,32 @@ def compute_eye_heights(points):
     right_height = (right_x**2 + right_y**2) ** 0.5
 
     return left_height, right_height
+
+def compute_eye_lengths(points):
+
+    # indexes
+    left_inner_index = get_landmark_index("left_eye_inner_corner")
+    right_inner_index = get_landmark_index("right_eye_inner_corner")
+    
+    left_outer_index = get_landmark_index("left_eye_outer_corner")
+    right_outer_index = get_landmark_index("right_eye_outer_corner")
+
+    # x & y
+
+    left_outer_x, left_outer_y = points[left_outer_index]
+    left_inner_x, left_inner_y = points[left_inner_index]
+
+    right_outer_x, right_outer_y = points[right_outer_index]
+    right_inner_x, right_inner_y = points[right_inner_index]
+
+    # distances
+
+    left_x = left_inner_x - left_outer_x
+    left_y = left_inner_y - left_outer_y
+    left_length = (left_x**2 + left_y**2) ** 0.5
+
+    right_x = right_inner_x - right_outer_x
+    right_y = right_inner_y - right_outer_y
+    right_length = (right_x**2 + right_y**2) ** 0.5
+
+    return left_length, right_length
