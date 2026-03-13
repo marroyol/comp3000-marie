@@ -20,8 +20,8 @@ def compute_ear_tip_distance(points):
     return total_distance
 
 def compute_ear_base_distance(points):
-    left_index = get_landmark_index("left_ear_base")
-    right_index = get_landmark_index("right_ear_base")
+    left_index = get_landmark_index("left_ear_inner_base")
+    right_index = get_landmark_index("right_ear_inner_base")
 
     left_x, left_y = points[left_index]
     right_x, right_y = points[right_index]
