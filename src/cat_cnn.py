@@ -1,12 +1,16 @@
 import os, json, cv2, torch
-from torch.utils.data import Dataset, Subset
+from torch.utils.data import Dataset, Subset, DataLoader
 import torchvision.transforms as T
 from tools import find_matching_image
+import torch.nn as nn
+import torchvision.models as models
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 image_dir = os.path.join(base_dir, "data", "images")
 label_dir = os.path.join(base_dir, "data", "labels")
 split_seed = 2
+batch_size=16
+model_name="resnet18" # available options: resnet18
 
 class CatLandmarksDataset(Dataset):
     def __init__(self, image_dir, label_dir, img_size=224, augment=False, label_files=None):
@@ -90,3 +94,21 @@ train_indices, val_indices, test_indices = make_split_indices(dataset_size, seed
 train_dataset = Subset(full_dataset,train_indices)
 val_dataset = Subset(full_dataset, val_indices)
 test_dataset = Subset(full_dataset, test_indices)
+
+train_loader = DataLoader(train_dataset,batch_size=batch_size,shuffle=True)
+val_loader =DataLoader(val_dataset,batch_size=batch_size, shuffle=False)
+test_loader = DataLoader(test_dataset, batch_size=batch_size,shuffle=False)
+
+def get_model(model_name, num_landmarks, pretrained=True):
+    output_features = num_landmarks * 2
+    if model_name == "resnet18":
+        weights = models.ResNet18_Weights.DEFAULT if pretrained else None
+        model = models.resnet18(weights=weights)
+        model.fc=nn.Linear(model.fc.in_features,output_features)
+        return model
+    
+    raise ValueError(f"{model_name} is not yet implemented!")
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+model = get_model(model_name, num_landmarks, pretrained=True).to(device)
