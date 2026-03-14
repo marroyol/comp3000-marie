@@ -2,8 +2,9 @@ import os, json, cv2, torch
 from torch.utils.data import Dataset
 import torchvision.transforms as T
 
-image_dir = "images"
-label_dir = "labels"
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+image_dir = os.path.join(base_dir, "data", "images")
+label_dir = os.path.join(base_dir, "data", "labels")
 
 class CatLandmarksDataset(Dataset):
     def __init__(self, image_dir, label_dir, img_size=224, augment=False, label_files=None):
@@ -66,6 +67,14 @@ class CatLandmarksDataset(Dataset):
 
         if self.augment:
             image_tensor = self.augmentation_transform(image_tensor)
-            
+
         return image_tensor, landmarks.view(-1)
-        
+
+sample_label_file = [filename for filename in os.listdir(label_dir) if filename.endswith(".json")][0]
+
+sample_label_path = os.path.join(label_dir, sample_label_file)
+
+with open(sample_label_path, "r") as f:
+    sample_labels = json.load(f)["labels"]
+
+num_landmarks = len(sample_labels)
