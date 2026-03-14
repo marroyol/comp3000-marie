@@ -20,12 +20,16 @@ class CatLandmarksDataset(Dataset):
             self.label_files = list(label_files)
 
         self.to_tensor = T.ToTensor()
+        # to improve training images
+        self.augmentation_transform = T.Compose([
+            T.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2)
+        ])
     
     def __len__(self):
         return len(self.label_files)
     
     def _find_matching_image(self, label_filename):
-        """The json labels match the image labels so we can match them together using tihs function"""
+        """The json labels match the image labels so we can match them together using this function"""
         base_name = os.path.splitext(label_filename)[0]
 
         possible_extensions = [
@@ -60,5 +64,8 @@ class CatLandmarksDataset(Dataset):
         resized_image = cv2.resize(image_rgb, (self.img_size, self.img_size))
         image_tensor = self.to_tensor(resized_image)
 
+        if self.augment:
+            image_tensor = self.augmentation_transform(image_tensor)
+            
         return image_tensor, landmarks.view(-1)
         
