@@ -17,7 +17,7 @@ class CatLandmarksDataset(Dataset):
 
         if label_files is None:
             self.label_files = sorted(
-                f for f in os.listdir(label_dir) if f.endswith(".json")
+                filename for filename in os.listdir(label_dir) if filename.endswith(".json")
             )
         else:
             self.label_files = list(label_files)
@@ -79,3 +79,14 @@ def make_split_indices(dataset_size,train_ratio=0.7,val_ratio=0.15,test_ratio=0.
     test_indices = all_indices[val_end:]
 
     return train_indices, val_indices, test_indices
+
+all_label_files = sorted(filename for filename in os.listdir(label_dir) if filename.endswith(".json"))
+
+# later when less headachy try making training dataset w/ augment=True
+full_dataset = CatLandmarksDataset(image_dir=image_dir,label_dir=label_dir,augment=False,label_files=all_label_files)
+dataset_size = len(all_label_files)
+train_indices, val_indices, test_indices = make_split_indices(dataset_size, seed=split_seed)
+
+train_dataset = Subset(full_dataset,train_indices)
+val_dataset = Subset(full_dataset, val_indices)
+test_dataset = Subset(full_dataset, test_indices)
