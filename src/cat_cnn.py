@@ -48,16 +48,29 @@ class CatLandmarksDataset(Dataset):
         image_bgr = cv2.imread(image_path)
         image_rgb = cv2.cvtColor(image_bgr,cv2.COLOR_BGR2RGB)
 
+        with open(label_path, "r") as f:
+            annotation_data = json.load(f)
+
+        
+        landmarks = torch.tensor(annotation_data["labels"], dtype=torch.float32)
+
+        x_min, y_min, x_max, y_max = annotation_data["bounding_boxes"]
+
+        x_min = int(x_min)
+        y_min = int(y_min)
+        x_max = int(x_max)
+        y_max = int(y_max)
+
+        image_rgb = image_rgb[y_min:y_max, x_min:x_max]
+
         height, width, _ = image_rgb.shape
 
-        with open(label_path, "r") as f:
-            landmarks = json.load(f)["labels"]
-        
-        landmarks = torch.tensor(landmarks, dtype=torch.float32)
+        landmarks[:,0] -= x_min
+        landmarks[:,1] -= y_min
 
         landmarks[:,0] /= width
         landmarks[:,1] /= height
-
+        
         resized_image = cv2.resize(image_rgb, (self.img_size, self.img_size))
         image_tensor = self.to_tensor(resized_image)
 
@@ -184,7 +197,7 @@ def predict(model, image_path, image_size=224):
     
     return image_rgb, predicted_landmarks_px
 
-if __name__ == "main":
+if __name__ == "__main__":
     print(f"You are running model {model_name}\nSplit sizes\ntrain: {len(train_dataset)}\nval:{len(val_dataset)},test: {len(test_dataset)}")
 
     if run_training:
