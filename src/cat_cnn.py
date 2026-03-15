@@ -4,6 +4,7 @@ import torchvision.transforms as T
 from tools import find_matching_image
 import torch.nn as nn
 import torchvision.models as models
+import torch.optim as optim
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 image_dir = os.path.join(base_dir, "data", "images")
@@ -111,4 +112,55 @@ def get_model(model_name, num_landmarks, pretrained=True):
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+if device.type == "cuda":
+    print(f"CUDA is working! GPU being used: {torch.cuda.get_device_name(0)}")
+else:
+    print("CUDA is not available so CPU is being used, please check")
+
 model = get_model(model_name, num_landmarks, pretrained=True).to(device)
+
+def train_model(model, train_loader,val_loader, epochs=20):
+    criterion = nn.MSELoss()
+    optimiser = optim.Adam(model.parameters(), lr=1e-3)
+
+    for epoch in range(epochs):
+        model.train()
+        running_train_loss = 0.0
+
+        for images, targets in train_loader:
+            images = images.to(device)
+            targets = targets.to(device)
+            
+            optimiser.zero_grad()
+
+            predictions = model(images)
+            loss = criterion(predictions, targets)
+
+            loss.backward()
+
+            optimiser.step()
+
+            running_train_loss += loss.item() * images.size(0)
+
+        average_train_loss = running_train_loss / len(train_loader.dataset)
+
+        model.eval()
+        running_val_loss = 0.0
+
+        with torch.no_grad():
+            for images, targets in val_loader:
+                images = images.to(device)
+                targets = targets.to(device)
+
+                predictions = model(images)
+                loss = criterion(predictions, targets)
+                running_val_loss += loss.item() * images.size(0)
+
+            average_val_loss = running_val_loss / len(val_loader.dataset)
+
+            print(f"epoch: {epoch + 1}/{epochs}\ntrain loss: {average_train_loss:.3f}\nval loss: {average_val_loss:.3f}")
+
+        return model
+        
+
+
