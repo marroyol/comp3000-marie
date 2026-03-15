@@ -12,6 +12,9 @@ label_dir = os.path.join(base_dir, "data", "labels")
 split_seed = 2
 batch_size=16
 model_name="resnet18" # available options: resnet18
+run_training = True
+image_path = os.path.join(image_dir,"paz3.png")
+model_path = os.path.join(base_dir, "cat_model.pt")
 
 class CatLandmarksDataset(Dataset):
     def __init__(self, image_dir, label_dir, img_size=224, augment=False, label_files=None):
@@ -119,9 +122,11 @@ else:
 
 model = get_model(model_name, num_landmarks, pretrained=True).to(device)
 
-def train_model(model, train_loader,val_loader, epochs=20):
+def train_model(model, train_loader,val_loader, epochs=100):
     criterion = nn.MSELoss()
     optimiser = optim.Adam(model.parameters(), lr=1e-3)
+    if device.type == "cuda":
+        print(f"Training with CUDA. Epochs = {epochs}")
 
     for epoch in range(epochs):
         model.train()
@@ -160,7 +165,31 @@ def train_model(model, train_loader,val_loader, epochs=20):
 
             print(f"epoch: {epoch + 1}/{epochs}\ntrain loss: {average_train_loss:.3f}\nval loss: {average_val_loss:.3f}")
 
-        return model
+    return model
         
+def predict(model, image_path, image_size=224):
+    image_bgr = cv2.imread(image_path)
+    image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
 
+    original_height, original_width, _ = image_rgb.shape
+    resized_image = cv2.resize(image_rgb, (image_size, image_size))
+    image_tensor = T.ToTensor()(resized_image).unsqueeze(0).to(device)
 
+    with torch.no_grad():
+        predicted_landmarks = model(image_tensor).cpu().view(-1, 2)
+
+    predicted_landmarks_px = predicted_landmarks.clone()
+    predicted_landmarks_px[:,0] *= original_width
+    predicted_landmarks_px[:,1] *= original_height
+    
+    return image_rgb, predicted_landmarks_px
+
+if __name__ == "main":
+    print(f"You are running model {model_name}\nSplit sizes\ntrain: {len(train_dataset)}\nval:{len(val_dataset)},test: {len(test_dataset)}")
+
+    if run_training:
+        model = train_model(model, train_loader, val_loader, epochs=15)
+        torch.save(model.state_dict(), model_path)
+    else:
+        model.load_state_dict(torch.load(model_path, map_location=device))
+        model.to(device)
