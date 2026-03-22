@@ -11,7 +11,7 @@ image_dir = os.path.join(base_dir, "data", "images")
 label_dir = os.path.join(base_dir, "data", "labels")
 split_seed = 2
 batch_size=16
-model_name="resnet18" # available options: resnet18
+model_name="resnet50" # available options: resnet18, resnet50
 run_training = True
 image_path = os.path.join(image_dir,"paz3.png")
 model_path = os.path.join(base_dir, "cat_model.pt")
@@ -103,14 +103,14 @@ def make_split_indices(dataset_size,train_ratio=0.7,val_ratio=0.15,test_ratio=0.
 
 all_label_files = sorted(filename for filename in os.listdir(label_dir) if filename.endswith(".json"))
 
-# later when less headachy try making training dataset w/ augment=True
-full_dataset = CatLandmarksDataset(image_dir=image_dir,label_dir=label_dir,augment=False,label_files=all_label_files)
 dataset_size = len(all_label_files)
 train_indices, val_indices, test_indices = make_split_indices(dataset_size, seed=split_seed)
+train_all_dataset = CatLandmarksDataset(image_dir, label_dir, augment=True,label_files=all_label_files)
+eval_full_dataset = CatLandmarksDataset(image_dir,label_dir,augment=False,label_files=all_label_files)
 
-train_dataset = Subset(full_dataset,train_indices)
-val_dataset = Subset(full_dataset, val_indices)
-test_dataset = Subset(full_dataset, test_indices)
+train_dataset = Subset(train_all_dataset, train_indices)
+val_dataset= Subset(eval_full_dataset, val_indices)
+test_dataset = Subset(eval_full_dataset, test_indices)
 
 train_loader = DataLoader(train_dataset,batch_size=batch_size,shuffle=True)
 val_loader =DataLoader(val_dataset,batch_size=batch_size, shuffle=False)
@@ -122,6 +122,12 @@ def get_model(model_name, num_landmarks, pretrained=True):
         weights = models.ResNet18_Weights.DEFAULT if pretrained else None
         model = models.resnet18(weights=weights)
         model.fc=nn.Linear(model.fc.in_features,output_features)
+        return model
+    
+    if model_name == "resnet50":
+        weights = models.ResNet50_Weights.DEFAULT if pretrained else None
+        model = models.resnet50(weights=weights)
+        model.fc = nn.Linear(model.fc.in_features, output_features)
         return model
     
     raise ValueError(f"{model_name} is not yet implemented!")
@@ -181,7 +187,7 @@ def train_model(model, train_loader,val_loader, epochs=100):
     return model
 
 def evaluate_model(model, test_loader):
-    criterion = nn.MSELoss()
+    criterion = nn.SmoothL1Loss()
     model.eval()
     running_test_loss = 0.0
 
@@ -220,7 +226,7 @@ if __name__ == "__main__":
     print(f"You are running model {model_name}\nSplit sizes\ntrain: {len(train_dataset)}\nval:{len(val_dataset)},test: {len(test_dataset)}")
 
     if run_training:
-        model = train_model(model, train_loader, val_loader, epochs=15)
+        model = train_model(model, train_loader, val_loader, epochs=30)
         torch.save(model.state_dict(), model_path)
     else:
         model.load_state_dict(torch.load(model_path, map_location=device))
