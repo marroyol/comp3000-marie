@@ -210,7 +210,13 @@ __marimo__/
 data/images/
 data/labels/
 
+# local test images
+src/paz3.png
+
 # Testing
 notebooks/computations_testing.ipynb
 notebooks/cnn_testing.ipynb
 notebooks/*_testing.ipynb
+
+# model files
+*.pt
