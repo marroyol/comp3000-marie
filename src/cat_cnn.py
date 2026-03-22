@@ -11,7 +11,7 @@ image_dir = os.path.join(base_dir, "data", "images")
 label_dir = os.path.join(base_dir, "data", "labels")
 split_seed = 2
 batch_size=16
-model_name="resnet50" # available options: resnet18, resnet50
+model_name="mobilenet_v3_small" # available options: resnet18, resnet50, mobilenet_v3_small
 run_training = True
 image_path = os.path.join(image_dir,"paz3.png")
 model_path = os.path.join(base_dir, "cat_model.pt")
@@ -128,6 +128,12 @@ def get_model(model_name, num_landmarks, pretrained=True):
         weights = models.ResNet50_Weights.DEFAULT if pretrained else None
         model = models.resnet50(weights=weights)
         model.fc = nn.Linear(model.fc.in_features, output_features)
+        return model
+
+    if model_name == "mobilenet_v3_small":
+        weights = models.MobileNet_V3_Small_Weights.DEFAULT if pretrained else None
+        model = models.mobilenet_v3_small(weights=weights)
+        model.classifier[3] = nn.Linear(model.classifier[3].in_features,output_features)
         return model
     
     raise ValueError(f"{model_name} is not yet implemented!")
