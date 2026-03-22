@@ -212,4 +212,5 @@ data/labels/
 
 # Testing
 notebooks/computations_testing.ipynb
+notebooks/cnn_testing.ipynb
 notebooks/*_testing.ipynb

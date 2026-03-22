@@ -179,7 +179,26 @@ def train_model(model, train_loader,val_loader, epochs=100):
             print(f"epoch: {epoch + 1}/{epochs}\ntrain loss: {average_train_loss:.3f}\nval loss: {average_val_loss:.3f}")
 
     return model
-        
+
+def evaluate_model(model, test_loader):
+    criterion = nn.MSELoss()
+    model.eval()
+    running_test_loss = 0.0
+
+    with torch.no_grad():
+        for images, targets in test_loader:
+            images = images.to(device)
+            targets = targets.to(device)
+
+            predictions = model(images)
+            loss = criterion(predictions, targets)
+
+            running_test_loss += loss.item() * images.size(0)
+
+        average_test_loss = running_test_loss/len(test_loader.dataset)
+        print(f"test loss = {average_test_loss:.3f}")
+        return average_test_loss
+
 def predict(model, image_path, image_size=224):
     image_bgr = cv2.imread(image_path)
     image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
@@ -206,3 +225,5 @@ if __name__ == "__main__":
     else:
         model.load_state_dict(torch.load(model_path, map_location=device))
         model.to(device)
+
+    test_loss = evaluate_model(model, test_loader)
