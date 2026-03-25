@@ -5,6 +5,7 @@ from tools import find_matching_image
 import torch.nn as nn
 import torchvision.models as models
 import torch.optim as optim
+import copy
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 image_dir = os.path.join(base_dir, "data", "images")
@@ -157,6 +158,11 @@ def train_model(model, train_loader,val_loader, epochs=100):
     criterion = nn.SmoothL1Loss()
     optimiser = optim.Adam(model.parameters(), lr=1e-3)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimiser, mode="min", factor=0.1, patience=5)
+    best_val_loss = float("inf")
+    best_model_state = None
+    epochs_without_improvement = 0
+    early_stopping_patience = 10
+    
     if device.type == "cuda":
         print(f"Training with CUDA. Epochs = {epochs}")
 
@@ -196,7 +202,21 @@ def train_model(model, train_loader,val_loader, epochs=100):
         average_val_loss = running_val_loss / len(val_loader.dataset)
         scheduler.step(average_val_loss)
         current_lr = optimiser.param_groups[0]["lr"]
-        print(f"epoch: {epoch + 1}/{epochs}\ntrain loss: {average_train_loss:.6f}\nval loss: {average_val_loss:.6f}\nlearning rate: {current_lr:.8f}")
+
+        if average_val_loss < best_val_loss:
+            best_val_loss = average_val_loss
+            best_model_state = copy.deepcopy(model.state_dict())
+            epochs_without_improvement = 0
+            print("Saved the new best model state!")
+        else:
+            epochs_without_improvement += 1
+        print(f"epoch: {epoch + 1}/{epochs}\ntrain loss: {average_train_loss:.6f}\nval loss: {average_val_loss:.6f}\nlearning rate: {current_lr:.8f}\nepochs without improvement: {epochs_without_improvement}")
+
+        if epochs_without_improvement >= early_stopping_patience:
+            print(f"\n****\nEarly stop triggered! Epoch {epoch +1 }")
+            break
+    if best_model_state is not None:
+        model.load_state_dict(best_model_state)
 
     return model
 
@@ -216,7 +236,7 @@ def evaluate_model(model, test_loader):
             running_test_loss += loss.item() * images.size(0)
 
         average_test_loss = running_test_loss/len(test_loader.dataset)
-        print(f"test loss = {average_test_loss:.3f}")
+        print(f"test loss = {average_test_loss:.8f}")
         return average_test_loss
 
 def predict(model, image_path, image_size=224):
