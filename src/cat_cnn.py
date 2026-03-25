@@ -11,7 +11,7 @@ image_dir = os.path.join(base_dir, "data", "images")
 label_dir = os.path.join(base_dir, "data", "labels")
 split_seed = 2
 batch_size=16
-model_name="mobilenet_v3_small" # available options: resnet18, resnet50, mobilenet_v3_small
+model_name="resnet50" # available options: efficientnet_b0, resnet18, resnet50, mobilenet_v3_small
 run_training = True
 image_path = os.path.join(image_dir,"paz3.png")
 model_path = os.path.join(base_dir, "cat_model.pt")
@@ -136,6 +136,12 @@ def get_model(model_name, num_landmarks, pretrained=True):
         model.classifier[3] = nn.Linear(model.classifier[3].in_features,output_features)
         return model
     
+    if model_name == "efficientnet_b0":
+        weights = models.EfficientNet_B0_Weights.DEFAULT if pretrained else None
+        model = models.efficientnet_b0(weights=weights)
+        model.classifier[1] = nn.Linear(model.classifier[1].in_features, output_features)
+        return model
+    
     raise ValueError(f"{model_name} is not yet implemented!")
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -148,7 +154,7 @@ else:
 model = get_model(model_name, num_landmarks, pretrained=True).to(device)
 
 def train_model(model, train_loader,val_loader, epochs=100):
-    criterion = nn.MSELoss()
+    criterion = nn.SmoothL1Loss()
     optimiser = optim.Adam(model.parameters(), lr=1e-3)
     if device.type == "cuda":
         print(f"Training with CUDA. Epochs = {epochs}")
@@ -232,7 +238,7 @@ if __name__ == "__main__":
     print(f"You are running model {model_name}\nSplit sizes\ntrain: {len(train_dataset)}\nval:{len(val_dataset)},test: {len(test_dataset)}")
 
     if run_training:
-        model = train_model(model, train_loader, val_loader, epochs=30)
+        model = train_model(model, train_loader, val_loader, epochs=50)
         torch.save(model.state_dict(), model_path)
     else:
         model.load_state_dict(torch.load(model_path, map_location=device))
