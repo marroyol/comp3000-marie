@@ -39,7 +39,10 @@ def compute_angle(vertex, point_a, point_b):
 
     return theta
 
+'''
+Don't think we actually need midpoints (I misinterpreted a graph) but leaving it for now just in case
 def midpoint(point_a, point_b):
     ax, ay = point_a
     bx, by = point_b
     return ((ax+bx)/2.0, (ay+by/2.0))
+'''
