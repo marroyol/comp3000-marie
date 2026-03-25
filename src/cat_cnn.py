@@ -156,6 +156,7 @@ model = get_model(model_name, num_landmarks, pretrained=True).to(device)
 def train_model(model, train_loader,val_loader, epochs=100):
     criterion = nn.SmoothL1Loss()
     optimiser = optim.Adam(model.parameters(), lr=1e-3)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimiser, mode="min", factor=0.1, patience=5)
     if device.type == "cuda":
         print(f"Training with CUDA. Epochs = {epochs}")
 
@@ -192,9 +193,10 @@ def train_model(model, train_loader,val_loader, epochs=100):
                 loss = criterion(predictions, targets)
                 running_val_loss += loss.item() * images.size(0)
 
-            average_val_loss = running_val_loss / len(val_loader.dataset)
-
-            print(f"epoch: {epoch + 1}/{epochs}\ntrain loss: {average_train_loss:.3f}\nval loss: {average_val_loss:.3f}")
+        average_val_loss = running_val_loss / len(val_loader.dataset)
+        scheduler.step(average_val_loss)
+        current_lr = optimiser.param_groups[0]["lr"]
+        print(f"epoch: {epoch + 1}/{epochs}\ntrain loss: {average_train_loss:.6f}\nval loss: {average_val_loss:.6f}\nlearning rate: {current_lr:.8f}")
 
     return model
 
