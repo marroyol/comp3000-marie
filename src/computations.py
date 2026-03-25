@@ -1,4 +1,6 @@
 from src.facial_landmark_labeller import get_landmark_index
+from src.tools import midpoint, compute_angle
+import math
 
 '''
 Note: Maybe consider combining these into 1 function?
@@ -90,3 +92,31 @@ def compute_eye_lengths(points):
     right_length = (right_x**2 + right_y**2) ** 0.5
 
     return left_length, right_length
+
+def compute_medial_ear_angles(points):
+
+    left_ear_inner_middle = points[get_landmark_index("left_ear_inner_middle")]
+    left_outer_base = points[get_landmark_index("left_ear_outer_base")]
+
+    right_ear_inner_middle = points[get_landmark_index("right_ear_inner_middle")]
+    right_outer_base = points[get_landmark_index("right_ear_outer_base")]
+
+    left_angle = compute_angle(
+        vertex=left_outer_base,
+        point_a=left_ear_inner_middle,
+        point_b=right_outer_base
+    )
+
+    right_angle = compute_angle(
+        vertex=right_outer_base,
+        point_a=right_ear_inner_middle,
+        point_b=left_outer_base
+    )
+
+    average_angle = (left_angle + right_angle) / 2.0
+
+    return {
+        "left_medial_angle": left_angle,
+        "right_medial_angle": right_angle,
+        "avg_medial_angle": average_angle
+    }
