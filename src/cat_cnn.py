@@ -145,6 +145,25 @@ def get_model(model_name, num_landmarks, pretrained=True):
     
     raise ValueError(f"{model_name} is not yet implemented!")
 
+def get_parameter_group(model, model_name):
+    if model_name in ["resnet18", "resnet50"]:
+        head_params = list(model.fc.parameters())
+        head_params_ids = {id(param) for param in head_params}
+        backbone_params = [
+            param for param in model.parameters()
+            if id(param) not in head_params_ids
+        ]
+        return backbone_params, head_params
+    if model_name in ["mobilenet_v3_small","efficientnet_b0"]:
+        head_params = list(model.classifier.parameters())
+        head_params_ids = {id(param) for param in head_params}
+        backbone_params = [
+            param for param in model.parameters()
+            if id(param) not in head_params_ids
+            ]
+        return backbone_params, head_params
+    raise ValueError(f"The parameter grouping for {model_name} is not implemented yet")
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 if device.type == "cuda":
@@ -156,7 +175,9 @@ model = get_model(model_name, num_landmarks, pretrained=True).to(device)
 
 def train_model(model, train_loader,val_loader, epochs=100):
     criterion = nn.SmoothL1Loss()
-    optimiser = optim.Adam(model.parameters(), lr=1e-3)
+    backbone_params, head_params = get_parameter_group(model, model_name)
+    optimiser = optim.Adam([{"params": backbone_params, "lr":5e-5},
+                            {"params": head_params, "lr" : 1e-3}])
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimiser, mode="min", factor=0.1, patience=5)
     best_val_loss = float("inf")
     best_model_state = None
@@ -201,7 +222,8 @@ def train_model(model, train_loader,val_loader, epochs=100):
 
         average_val_loss = running_val_loss / len(val_loader.dataset)
         scheduler.step(average_val_loss)
-        current_lr = optimiser.param_groups[0]["lr"]
+        backbone_lr = optimiser.param_groups[0]["lr"]
+        head_lr = optimiser.param_groups[1]["lr"]
 
         if average_val_loss < best_val_loss:
             best_val_loss = average_val_loss
@@ -210,7 +232,7 @@ def train_model(model, train_loader,val_loader, epochs=100):
             print("Saved the new best model state!")
         else:
             epochs_without_improvement += 1
-        print(f"epoch: {epoch + 1}/{epochs}\ntrain loss: {average_train_loss:.6f}\nval loss: {average_val_loss:.6f}\nlearning rate: {current_lr:.8f}\nepochs without improvement: {epochs_without_improvement}")
+        print(f"epoch: {epoch + 1}/{epochs}\ntrain loss: {average_train_loss:.6f}\nval loss: {average_val_loss:.6f}\nback bone lr: {backbone_lr:.8f}\nhead lr: {head_lr:.8f}\nepochs without improvement: {epochs_without_improvement}")
 
         if epochs_without_improvement >= early_stopping_patience:
             print(f"\n****\nEarly stop triggered! Epoch {epoch +1 }")
