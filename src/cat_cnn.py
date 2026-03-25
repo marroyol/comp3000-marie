@@ -145,24 +145,6 @@ def get_model(model_name, num_landmarks, pretrained=True):
     
     raise ValueError(f"{model_name} is not yet implemented!")
 
-def get_parameter_group(model, model_name):
-    if model_name in ["resnet18", "resnet50"]:
-        head_params = list(model.fc.parameters())
-        head_params_ids = {id(param) for param in head_params}
-        backbone_params = [
-            param for param in model.parameters()
-            if id(param) not in head_params_ids
-        ]
-        return backbone_params, head_params
-    if model_name in ["mobilenet_v3_small","efficientnet_b0"]:
-        head_params = list(model.classifier.parameters())
-        head_params_ids = {id(param) for param in head_params}
-        backbone_params = [
-            param for param in model.parameters()
-            if id(param) not in head_params_ids
-            ]
-        return backbone_params, head_params
-    raise ValueError(f"The parameter grouping for {model_name} is not implemented yet")
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -175,9 +157,7 @@ model = get_model(model_name, num_landmarks, pretrained=True).to(device)
 
 def train_model(model, train_loader,val_loader, epochs=100):
     criterion = nn.SmoothL1Loss()
-    backbone_params, head_params = get_parameter_group(model, model_name)
-    optimiser = optim.Adam([{"params": backbone_params, "lr":5e-5},
-                            {"params": head_params, "lr" : 1e-3}])
+    optimiser = optim.Adam(model.parameters(), lr=1e-3)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimiser, mode="min", factor=0.1, patience=5)
     best_val_loss = float("inf")
     best_model_state = None
@@ -222,8 +202,7 @@ def train_model(model, train_loader,val_loader, epochs=100):
 
         average_val_loss = running_val_loss / len(val_loader.dataset)
         scheduler.step(average_val_loss)
-        backbone_lr = optimiser.param_groups[0]["lr"]
-        head_lr = optimiser.param_groups[1]["lr"]
+        current_lr = optimiser.param_groups[0]["lr"]
 
         if average_val_loss < best_val_loss:
             best_val_loss = average_val_loss
@@ -232,7 +211,7 @@ def train_model(model, train_loader,val_loader, epochs=100):
             print("Saved the new best model state!")
         else:
             epochs_without_improvement += 1
-        print(f"epoch: {epoch + 1}/{epochs}\ntrain loss: {average_train_loss:.6f}\nval loss: {average_val_loss:.6f}\nback bone lr: {backbone_lr:.8f}\nhead lr: {head_lr:.8f}\nepochs without improvement: {epochs_without_improvement}")
+        print(f"epoch: {epoch + 1}/{epochs}\ntrain loss: {average_train_loss:.6f}\nval loss: {average_val_loss:.6f}\nlearning rate: {current_lr:.8f}\nepochs without improvement: {epochs_without_improvement}")
 
         if epochs_without_improvement >= early_stopping_patience:
             print(f"\n****\nEarly stop triggered! Epoch {epoch +1 }")
@@ -261,20 +240,34 @@ def evaluate_model(model, test_loader):
         print(f"test loss = {average_test_loss:.8f}")
         return average_test_loss
 
-def predict(model, image_path, image_size=224):
+def predict(model, image_path, bounding_box, image_size=224):
     image_bgr = cv2.imread(image_path)
+    if image_bgr is None:
+        raise ValueError("error loading image into predict()")
     image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
 
-    original_height, original_width, _ = image_rgb.shape
-    resized_image = cv2.resize(image_rgb, (image_size, image_size))
+    x_min, y_min, x_max, y_max = bounding_box
+    x_min, y_min, x_max, y_max = map(int, [x_min, y_min, x_max, y_max])
+
+    cropped_image = image_rgb[y_min:y_max, x_min:x_max]
+    if cropped_image.size == 0:
+        raise ValueError("bounding box generated an empty image crop")
+    crop_height, crop_width, _ = cropped_image.shape
+
+    resized_image = cv2.resize(cropped_image, (image_size, image_size))
     image_tensor = T.ToTensor()(resized_image).unsqueeze(0).to(device)
 
+    model.eval()
     with torch.no_grad():
         predicted_landmarks = model(image_tensor).cpu().view(-1, 2)
+    
 
     predicted_landmarks_px = predicted_landmarks.clone()
-    predicted_landmarks_px[:,0] *= original_width
-    predicted_landmarks_px[:,1] *= original_height
+    predicted_landmarks_px[:,0] *= crop_width
+    predicted_landmarks_px[:,1] *= crop_height
+
+    predicted_landmarks_px[:,0] += x_min
+    predicted_landmarks_px[:,1] += y_min
     
     return image_rgb, predicted_landmarks_px
 
