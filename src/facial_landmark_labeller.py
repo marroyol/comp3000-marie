@@ -7,20 +7,34 @@ from typing import Dict, List
 # Index to string name mapping
 LANDMARK_INDEX_MAP: Dict[int, str] = {
     24: "left_ear_tip",
-    29: "right_ear_tip",
+    25: "left_ear_inner_middle",
+    23: "left_ear_outer_middle",
     26: "left_ear_inner_base",
+    22: "left_ear_outer_base",
+    29: "right_ear_tip",
+    28: "right_ear_inner_middle",
+    30: "right_ear_outer_middle",
     27: "right_ear_inner_base",
+    31: "right_ear_outer_base",
     6: "left_eye_middle_top",
     7: "left_eye_middle_bottom",
+    5: "left_eye_inner_corner",
+    4: "left_eye_outer_corner",
     10: "right_eye_middle_top",
     11: "right_eye_middle_bottom",
     9: "right_eye_inner_corner",
     8: "right_eye_outer_corner",
-    5: "left_eye_inner_corner",
-    4: "left_eye_outer_corner",
-    22: "left_ear_outer_base",
-    31: "right_ear_outer_base"
 }
+
+'''
+25 inner middle left ear
+
+23 outer middle left ear
+
+28 inner middle right ear
+
+30 outer middle right ear	
+'''
 
 # 8 is actually right outer eye and 9 right inner eye i think
 
