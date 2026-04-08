@@ -218,5 +218,8 @@ notebooks/computations_testing.ipynb
 notebooks/cnn_testing.ipynb
 notebooks/*_testing.ipynb
 
+# Pain labeller
+src/pain_labeller.py
+
 # model files
 *.pt

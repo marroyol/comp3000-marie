@@ -1,7 +1,7 @@
 import os, json, cv2, torch
 from torch.utils.data import Dataset, Subset, DataLoader
 import torchvision.transforms as T
-from tools import find_matching_image
+from src.tools import find_matching_image
 import torch.nn as nn
 import torchvision.models as models
 import torch.optim as optim
@@ -13,7 +13,7 @@ label_dir = os.path.join(base_dir, "data", "labels")
 split_seed = 2
 batch_size=16
 model_name="resnet50" # available options: efficientnet_b0, resnet18, resnet50, mobilenet_v3_small
-run_training = True
+run_training = False
 image_path = os.path.join(image_dir,"paz3.png")
 model_path = os.path.join(base_dir, "cat_model.pt")
 
@@ -272,8 +272,11 @@ def predict(model, image_path, bounding_box, image_size=224):
     return image_rgb, predicted_landmarks_px
 
 if __name__ == "__main__":
-    print(f"You are running model {model_name}\nSplit sizes\ntrain: {len(train_dataset)}\nval:{len(val_dataset)},test: {len(test_dataset)}")
+    from nme import evaluate_nme, print_nme_report
 
+    print(f"You are running model {model_name}\nSplit sizes\ntrain: {len(train_dataset)}\nval:{len(val_dataset)},test: {len(test_dataset)}")
+    print(f"Split sizes train: {len(train_dataset)}   \n"
+          f"val: {len(val_dataset)} \n test: {len(test_dataset)}")
     if run_training:
         model = train_model(model, train_loader, val_loader, epochs=50)
         torch.save(model.state_dict(), model_path)
@@ -282,3 +285,13 @@ if __name__ == "__main__":
         model.to(device)
 
     test_loss = evaluate_model(model, test_loader)
+    
+    test_label_files = [all_label_files[i] for i in test_indices]
+    nme_results = evaluate_nme(
+        model,
+        label_files=test_label_files,
+        image_dir=image_dir,
+        label_dir=label_dir,
+        device=device
+    )
+    print_nme_report(nme_results, model_name=model_name)

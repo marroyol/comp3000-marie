@@ -1,6 +1,25 @@
 from src.facial_landmark_labeller import get_landmark_index
-from src.tools import midpoint, compute_angle
+from src.tools import compute_angle
 import math
+
+EVANGELISTA_STATS = {
+    "ear_tips_bases_ratio":{
+        "control_mean": 2.85, "control_sd": 0.3,
+        "painful_mean": 2.34, "painful_sd": 0.3,
+    },
+    "eye_height_width_ratio": {
+        "control_mean": 0.79, "control_sd": 0.1,
+        "painful_mean": 0.50, "painful_sd": 0.2,
+    },
+    "medial_ear_angle":{
+        "control_mean": 126.5, "control_sd": 4.7,
+        "painful_mean": 140.4, "painful_sd": 6.5,
+    },
+    "lateral_ear_angle": {
+        "control_mean": 78.9, "control_sd": 3.1,
+        "painful_mean": 68.5, "painful_sd": 5.9,
+    },
+}
 
 '''
 Note: Maybe consider combining these into 1 function?
@@ -34,6 +53,13 @@ def compute_ear_base_distance(points):
     total_distance = (distance_x ** 2 + distance_y ** 2) ** 0.5
 
     return total_distance
+
+def compute_ear_tips_bases_ratio(points):
+    tip_distance = compute_ear_tip_distance(points)
+    base_distance = compute_ear_base_distance(points)
+    if base_distance == 0:
+        return float("nan")
+    return tip_distance / base_distance
 
 def compute_eye_heights(points):
 
@@ -93,30 +119,60 @@ def compute_eye_lengths(points):
 
     return left_length, right_length
 
-def compute_medial_ear_angles(points):
+def compute_eye_height_width_ratio(points):
+    left_height, right_height = compute_eye_heights(points)
+    left_width, right_width = compute_eye_lengths(points)
 
-    left_ear_inner_middle = points[get_landmark_index("left_ear_inner_middle")]
+    if left_width == 0 or right_width == 0:
+        return float("nan")
+    
+    left_ratio = left_height / left_width
+    right_ratio = right_height / right_width
+    return (left_ratio + right_ratio) / 2.0
+
+def compute_medial_angle(points):
+    left_inner_base = points[get_landmark_index("left_ear_inner_base")]
+    left_inner_middle = points[get_landmark_index("left_ear_inner_middle")]
+    right_inner_base = points[get_landmark_index("right_ear_inner_base")]
+    right_inner_middle = points[get_landmark_index("right_ear_inner_middle")]
+
+    left_angle = compute_angle(
+        vertex = left_inner_base,
+        point_a = left_inner_middle,
+        point_b = right_inner_base,
+    )
+    right_angle = compute_angle(
+        vertex = right_inner_base,
+        point_a = right_inner_middle,
+        point_b = left_inner_base,
+    )
+    return (left_angle + right_angle) / 2.0
+
+def compute_lateral_angle(points):
+
     left_outer_base = points[get_landmark_index("left_ear_outer_base")]
-
-    right_ear_inner_middle = points[get_landmark_index("right_ear_inner_middle")]
+    left_outer_middle = points[get_landmark_index("left_ear_outer_middle")]
     right_outer_base = points[get_landmark_index("right_ear_outer_base")]
+    right_outer_middle = points[get_landmark_index("right_ear_outer_middle")]
 
     left_angle = compute_angle(
         vertex=left_outer_base,
-        point_a=left_ear_inner_middle,
-        point_b=right_outer_base
+        point_a=left_outer_middle,
+        point_b=right_outer_base,
     )
 
     right_angle = compute_angle(
         vertex=right_outer_base,
-        point_a=right_ear_inner_middle,
-        point_b=left_outer_base
+        point_a=right_outer_middle,
+        point_b=left_outer_base,
     )
+    
+    return 180.0 - ((left_angle + right_angle) / 2.0)
 
-    average_angle = (left_angle + right_angle) / 2.0
-
+def compute_all_features(points):
     return {
-        "left_medial_angle": left_angle,
-        "right_medial_angle": right_angle,
-        "avg_medial_angle": average_angle
+        "ear_tips_bases_ratio": compute_ear_tips_bases_ratio(points),
+        "eye_height_width_ratio":compute_eye_height_width_ratio(points),
+        "medial_ear_angle": compute_medial_angle(points),
+        "lateral_ear_angle": compute_lateral_angle(points),
     }

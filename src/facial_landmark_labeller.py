@@ -36,7 +36,6 @@ LANDMARK_INDEX_MAP: Dict[int, str] = {
 30 outer middle right ear	
 '''
 
-# 8 is actually right outer eye and 9 right inner eye i think
 
 # String to index mapping
 LANDMARK_NAME_MAP: Dict[str,int] = {}
