@@ -1,0 +1,222 @@
+{
+  "00000020_018.json": {
+    "label": "likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "CAT_01_00000125_016.json": {
+    "label": "unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000076_020.json": {
+    "label": "very_unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000040_028.json": {
+    "label": "very_unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000036_005.json": {
+    "label": "very_unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000396_020.json": {
+    "label": "very_likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "CAT_01_00000146_021.json": {
+    "label": "very_likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000033_021.json": {
+    "label": "unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000431_024.json": {
+    "label": "likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000431_013.json": {
+    "label": "likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000084_001.json": {
+    "label": "very_unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000301_016.json": {
+    "label": "very_likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000428_020.json": {
+    "label": "likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000442_015.json": {
+    "label": "very_likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000395_000.json": {
+    "label": "likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000377_009.json": {
+    "label": "unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000078_006.json": {
+    "label": "likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000063_003.json": {
+    "label": "very_unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000010_029.json": {
+    "label": "unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000093_009.json": {
+    "label": "likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000024_024.json": {
+    "label": "likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "CAT_01_00000120_028.json": {
+    "label": null,
+    "excluded": true,
+    "notes": ""
+  },
+  "00000067_022.json": {
+    "label": null,
+    "excluded": true,
+    "notes": ""
+  },
+  "00000362_024.json": {
+    "label": null,
+    "excluded": true,
+    "notes": ""
+  },
+  "CAT_01_00000138_001.json": {
+    "label": null,
+    "excluded": true,
+    "notes": ""
+  },
+  "00000317_020.json": {
+    "label": "very_likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "CAT_01_00000148_028.json": {
+    "label": "likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000097_026.json": {
+    "label": "very_unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000089_021.json": {
+    "label": "likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000083_024.json": {
+    "label": "very_unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000352_001.json": {
+    "label": "very_unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "CAT_01_00000124_022.json": {
+    "label": "very_unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000036_000.json": {
+    "label": "very_unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000350_013.json": {
+    "label": "very_unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000018_024.json": {
+    "label": "very_unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000063_018.json": {
+    "label": "very_unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000361_002.json": {
+    "label": "likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000059_015.json": {
+    "label": "likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000059_021.json": {
+    "label": "likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "CAT_01_00000161_018.json": {
+    "label": "unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000310_002.json": {
+    "label": "very_unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "CAT_01_00000110_001.json": {
+    "label": "unlikely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000439_012.json": {
+    "label": "very_likely",
+    "excluded": false,
+    "notes": ""
+  },
+  "00000079_026.json": {
+    "label": "unlikely",
+    "excluded": false,
+    "notes": ""
+  }
+}
