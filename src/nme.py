@@ -6,8 +6,8 @@ import numpy as np
 import torch
 import torchvision.transforms as T
 
-from facial_landmark_labeller import LANDMARK_INDEX_MAP
-from tools import find_matching_image
+from src.facial_landmark_labeller import LANDMARK_INDEX_MAP
+from src.tools import find_matching_image
 
 EAR_INDICES = sorted(i for i, name in LANDMARK_INDEX_MAP.items() if "ear" in name)
 EYE_INDICES = sorted(i for i, name in LANDMARK_INDEX_MAP.items() if "eye" in name)
@@ -102,25 +102,25 @@ def evaluate_nme(model, label_files, image_dir, label_dir, device, img_size=224)
 def print_nme_report(results, model_name=None):
     header = "NME Report"
     if model_name:
-        header += f" — {model_name}"
+        header += f" for {model_name}"
     print("\n" + header)
     print("=" * len(header))
     print(f"Images evaluated: {results['num_images']}")
-    print(f"Normaliser:       bounding box diagonal")
+    print(f"Normaliser: bounding box diagonal")
     print()
-    print(f"  Overall NME:    {results['overall']:.3f}%")
-    print(f"  Ears  NME:      {results['ears']:.3f}%   "
+    print(f"  Overall NME: {results['overall']:.3f}%")
+    print(f"  Ears NME: {results['ears']:.3f}%   "
           f"(landmarks {EAR_INDICES})")
-    print(f"  Eyes  NME:      {results['eyes']:.3f}%   "
+    print(f"  Eyes NME: {results['eyes']:.3f}%   "
           f"(landmarks {EYE_INDICES})")
-    print(f"  Other NME:      {results['other']:.3f}%")
+    print(f"  Other NME: {results['other']:.3f}%")
     print()
  
     per_lm = results["per_landmark"]
     worst = np.argsort(per_lm)[::-1][:5]
-    print("  5 worst landmarks (index : NME%):")
+    print("5 worst landmarks (index : NME%):")
     for idx in worst:
         name = LANDMARK_INDEX_MAP.get(int(idx), "(undefined)")
-        print(f"    {int(idx):3d} {name:30s} {per_lm[idx]:.3f}%")
+        print(f"{int(idx):3d} {name:30s} {per_lm[idx]:.3f}%")
     print()
  
