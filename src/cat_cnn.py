@@ -12,10 +12,10 @@ image_dir = os.path.join(base_dir, "data", "images")
 label_dir = os.path.join(base_dir, "data", "labels")
 split_seed = 2
 batch_size=16
-model_name="resnet50" # available options: efficientnet_b0, resnet18, resnet50, mobilenet_v3_small
+model_name="resnet18" # available options: efficientnet_b0, resnet18, resnet50, mobilenet_v3_small
 run_training = False
 image_path = os.path.join(image_dir,"paz3.png")
-model_path = os.path.join(base_dir, "cat_model.pt")
+model_path = os.path.join(base_dir, f"cat_model_{model_name}.pt")
 
 class CatLandmarksDataset(Dataset):
     def __init__(self, image_dir, label_dir, img_size=224, augment=False, label_files=None):
@@ -272,7 +272,7 @@ def predict(model, image_path, bounding_box, image_size=224):
     return image_rgb, predicted_landmarks_px
 
 if __name__ == "__main__":
-    from nme import evaluate_nme, print_nme_report
+    from src.nme import evaluate_nme, print_nme_report
 
     print(f"You are running model {model_name}\nSplit sizes\ntrain: {len(train_dataset)}\nval:{len(val_dataset)},test: {len(test_dataset)}")
     print(f"Split sizes train: {len(train_dataset)}   \n"
