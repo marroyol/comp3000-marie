@@ -1,0 +1,522 @@
+[
+  {
+    "file": "00000020_018.json",
+    "hand_label": "likely",
+    "predicted": "likely",
+    "correct": true,
+    "painful_fraction": 0.5,
+    "features": {
+      "ear_tips_bases_ratio": 2.553797008443363,
+      "eye_height_width_ratio": 0.4966391940435648,
+      "medial_ear_angle": 129.16626179148878,
+      "lateral_ear_angle": 80.29360390481537
+    }
+  },
+  {
+    "file": "CAT_01_00000125_016.json",
+    "hand_label": "unlikely",
+    "predicted": "very_unlikely",
+    "correct": false,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 3.378520026202345,
+      "eye_height_width_ratio": 0.7548865920650116,
+      "medial_ear_angle": 126.07682829485971,
+      "lateral_ear_angle": 82.54838316858124
+    }
+  },
+  {
+    "file": "00000076_020.json",
+    "hand_label": "very_unlikely",
+    "predicted": "unlikely",
+    "correct": false,
+    "painful_fraction": 0.25,
+    "features": {
+      "ear_tips_bases_ratio": 2.6647678077333907,
+      "eye_height_width_ratio": 0.8259630968549299,
+      "medial_ear_angle": 136.25521994057044,
+      "lateral_ear_angle": 75.99015440506784
+    }
+  },
+  {
+    "file": "00000040_028.json",
+    "hand_label": "very_unlikely",
+    "predicted": "very_unlikely",
+    "correct": true,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 2.934136516240303,
+      "eye_height_width_ratio": 0.8616449317290351,
+      "medial_ear_angle": 126.41721212822576,
+      "lateral_ear_angle": 80.46023310194425
+    }
+  },
+  {
+    "file": "00000036_005.json",
+    "hand_label": "very_unlikely",
+    "predicted": "very_unlikely",
+    "correct": true,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 2.613280462502853,
+      "eye_height_width_ratio": 0.9465436912258869,
+      "medial_ear_angle": 130.19565608411654,
+      "lateral_ear_angle": 84.38872873213988
+    }
+  },
+  {
+    "file": "00000396_020.json",
+    "hand_label": "very_likely",
+    "predicted": "very_likely",
+    "correct": true,
+    "painful_fraction": 0.75,
+    "features": {
+      "ear_tips_bases_ratio": 2.3091684366999914,
+      "eye_height_width_ratio": 0.6659265398998635,
+      "medial_ear_angle": 129.75746028264712,
+      "lateral_ear_angle": 73.84701373992971
+    }
+  },
+  {
+    "file": "CAT_01_00000146_021.json",
+    "hand_label": "very_likely",
+    "predicted": "unlikely",
+    "correct": false,
+    "painful_fraction": 0.25,
+    "features": {
+      "ear_tips_bases_ratio": 2.6396647569726803,
+      "eye_height_width_ratio": 0.47899123383115916,
+      "medial_ear_angle": 121.08673157783069,
+      "lateral_ear_angle": 83.24552336262025
+    }
+  },
+  {
+    "file": "00000033_021.json",
+    "hand_label": "unlikely",
+    "predicted": "unlikely",
+    "correct": true,
+    "painful_fraction": 0.25,
+    "features": {
+      "ear_tips_bases_ratio": 2.74399523893152,
+      "eye_height_width_ratio": 0.7024972611715092,
+      "medial_ear_angle": 133.971431514122,
+      "lateral_ear_angle": 81.32421947888488
+    }
+  },
+  {
+    "file": "00000431_024.json",
+    "hand_label": "likely",
+    "predicted": "likely",
+    "correct": true,
+    "painful_fraction": 0.5,
+    "features": {
+      "ear_tips_bases_ratio": 2.142511492594545,
+      "eye_height_width_ratio": 0.7597631313030273,
+      "medial_ear_angle": 135.0468571748763,
+      "lateral_ear_angle": 82.88217064930959
+    }
+  },
+  {
+    "file": "00000431_013.json",
+    "hand_label": "likely",
+    "predicted": "likely",
+    "correct": true,
+    "painful_fraction": 0.5,
+    "features": {
+      "ear_tips_bases_ratio": 2.567057462989449,
+      "eye_height_width_ratio": 0.6852195860860358,
+      "medial_ear_angle": 122.66592641844429,
+      "lateral_ear_angle": 87.03627544811258
+    }
+  },
+  {
+    "file": "00000084_001.json",
+    "hand_label": "very_unlikely",
+    "predicted": "very_unlikely",
+    "correct": true,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 3.003954262692027,
+      "eye_height_width_ratio": 0.8978605227233056,
+      "medial_ear_angle": 125.62943635823004,
+      "lateral_ear_angle": 81.65502878554624
+    }
+  },
+  {
+    "file": "00000301_016.json",
+    "hand_label": "very_likely",
+    "predicted": "very_likely",
+    "correct": true,
+    "painful_fraction": 0.75,
+    "features": {
+      "ear_tips_bases_ratio": 2.2611275164467655,
+      "eye_height_width_ratio": 0.7455355828958907,
+      "medial_ear_angle": 143.11178078429384,
+      "lateral_ear_angle": 72.23819843486149
+    }
+  },
+  {
+    "file": "00000428_020.json",
+    "hand_label": "likely",
+    "predicted": "very_unlikely",
+    "correct": false,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 2.869738770003109,
+      "eye_height_width_ratio": 0.849353970101703,
+      "medial_ear_angle": 120.33571943217083,
+      "lateral_ear_angle": 77.59511900351481
+    }
+  },
+  {
+    "file": "00000442_015.json",
+    "hand_label": "very_likely",
+    "predicted": "very_likely",
+    "correct": true,
+    "painful_fraction": 0.75,
+    "features": {
+      "ear_tips_bases_ratio": 2.0722823848669596,
+      "eye_height_width_ratio": 0.8257769225982943,
+      "medial_ear_angle": 155.69381403968305,
+      "lateral_ear_angle": 70.93743103246791
+    }
+  },
+  {
+    "file": "00000395_000.json",
+    "hand_label": "likely",
+    "predicted": "very_unlikely",
+    "correct": false,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 2.8074441568024247,
+      "eye_height_width_ratio": 0.8090413317706746,
+      "medial_ear_angle": 126.9007346274834,
+      "lateral_ear_angle": 81.21646504846836
+    }
+  },
+  {
+    "file": "00000377_009.json",
+    "hand_label": "unlikely",
+    "predicted": "likely",
+    "correct": false,
+    "painful_fraction": 0.5,
+    "features": {
+      "ear_tips_bases_ratio": 2.590818709715669,
+      "eye_height_width_ratio": 1.3853696398966702,
+      "medial_ear_angle": 127.05388446886747,
+      "lateral_ear_angle": 75.3683628588208
+    }
+  },
+  {
+    "file": "00000078_006.json",
+    "hand_label": "likely",
+    "predicted": "likely",
+    "correct": true,
+    "painful_fraction": 0.5,
+    "features": {
+      "ear_tips_bases_ratio": 2.494282174368179,
+      "eye_height_width_ratio": 0.6830270962951869,
+      "medial_ear_angle": 125.34994562295363,
+      "lateral_ear_angle": 84.91511152462705
+    }
+  },
+  {
+    "file": "00000063_003.json",
+    "hand_label": "very_unlikely",
+    "predicted": "very_unlikely",
+    "correct": true,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 2.7375156929191653,
+      "eye_height_width_ratio": 0.8891908996562813,
+      "medial_ear_angle": 129.95560255841528,
+      "lateral_ear_angle": 79.45005024832653
+    }
+  },
+  {
+    "file": "00000010_029.json",
+    "hand_label": "unlikely",
+    "predicted": "unlikely",
+    "correct": true,
+    "painful_fraction": 0.25,
+    "features": {
+      "ear_tips_bases_ratio": 2.8173357997287214,
+      "eye_height_width_ratio": 0.7083366972330349,
+      "medial_ear_angle": 136.24342486494777,
+      "lateral_ear_angle": 75.54358145886101
+    }
+  },
+  {
+    "file": "00000093_009.json",
+    "hand_label": "likely",
+    "predicted": "likely",
+    "correct": true,
+    "painful_fraction": 0.5,
+    "features": {
+      "ear_tips_bases_ratio": 2.6112755217097945,
+      "eye_height_width_ratio": 0.663742592241334,
+      "medial_ear_angle": 135.88860718611716,
+      "lateral_ear_angle": 76.03632047510514
+    }
+  },
+  {
+    "file": "00000024_024.json",
+    "hand_label": "likely",
+    "predicted": "very_unlikely",
+    "correct": false,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 2.8662844435197794,
+      "eye_height_width_ratio": 0.8494770235130356,
+      "medial_ear_angle": 128.75568808632312,
+      "lateral_ear_angle": 81.08717985348704
+    }
+  },
+  {
+    "file": "00000317_020.json",
+    "hand_label": "very_likely",
+    "predicted": "very_unlikely",
+    "correct": false,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 2.8065203618619927,
+      "eye_height_width_ratio": 0.7355518200921907,
+      "medial_ear_angle": 123.02890351831878,
+      "lateral_ear_angle": 81.39125156693848
+    }
+  },
+  {
+    "file": "CAT_01_00000148_028.json",
+    "hand_label": "likely",
+    "predicted": "likely",
+    "correct": true,
+    "painful_fraction": 0.5,
+    "features": {
+      "ear_tips_bases_ratio": 2.5578189730276737,
+      "eye_height_width_ratio": 0.5930522411171287,
+      "medial_ear_angle": 129.50576384708492,
+      "lateral_ear_angle": 78.71872428181837
+    }
+  },
+  {
+    "file": "00000097_026.json",
+    "hand_label": "very_unlikely",
+    "predicted": "very_unlikely",
+    "correct": true,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 2.7460718673336775,
+      "eye_height_width_ratio": 0.890089717560663,
+      "medial_ear_angle": 130.45094303752148,
+      "lateral_ear_angle": 80.31891269164987
+    }
+  },
+  {
+    "file": "00000089_021.json",
+    "hand_label": "likely",
+    "predicted": "unlikely",
+    "correct": false,
+    "painful_fraction": 0.25,
+    "features": {
+      "ear_tips_bases_ratio": 2.8304710596070475,
+      "eye_height_width_ratio": 0.6631763702114382,
+      "medial_ear_angle": 129.69776608854056,
+      "lateral_ear_angle": 80.02446609723171
+    }
+  },
+  {
+    "file": "00000083_024.json",
+    "hand_label": "very_unlikely",
+    "predicted": "very_unlikely",
+    "correct": true,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 2.7337708094901263,
+      "eye_height_width_ratio": 0.731516412854236,
+      "medial_ear_angle": 125.12044757836547,
+      "lateral_ear_angle": 79.34887913173803
+    }
+  },
+  {
+    "file": "00000352_001.json",
+    "hand_label": "very_unlikely",
+    "predicted": "very_unlikely",
+    "correct": true,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 2.8878805097065596,
+      "eye_height_width_ratio": 0.8014707178477765,
+      "medial_ear_angle": 130.0648183141927,
+      "lateral_ear_angle": 81.00388024499276
+    }
+  },
+  {
+    "file": "CAT_01_00000124_022.json",
+    "hand_label": "very_unlikely",
+    "predicted": "very_unlikely",
+    "correct": true,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 3.2090274674739954,
+      "eye_height_width_ratio": 0.9750723305708983,
+      "medial_ear_angle": 125.60351462947096,
+      "lateral_ear_angle": 78.19103179556464
+    }
+  },
+  {
+    "file": "00000036_000.json",
+    "hand_label": "very_unlikely",
+    "predicted": "unlikely",
+    "correct": false,
+    "painful_fraction": 0.25,
+    "features": {
+      "ear_tips_bases_ratio": 2.8142576274064655,
+      "eye_height_width_ratio": 0.7797121987070716,
+      "medial_ear_angle": 133.0901918434773,
+      "lateral_ear_angle": 78.59122232220537
+    }
+  },
+  {
+    "file": "00000350_013.json",
+    "hand_label": "very_unlikely",
+    "predicted": "very_unlikely",
+    "correct": true,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 3.2177746140765655,
+      "eye_height_width_ratio": 0.8091633487846752,
+      "medial_ear_angle": 123.89217512247001,
+      "lateral_ear_angle": 78.96334059165042
+    }
+  },
+  {
+    "file": "00000018_024.json",
+    "hand_label": "very_unlikely",
+    "predicted": "unlikely",
+    "correct": false,
+    "painful_fraction": 0.25,
+    "features": {
+      "ear_tips_bases_ratio": 2.593552907703572,
+      "eye_height_width_ratio": 0.795580402272841,
+      "medial_ear_angle": 124.89606478704442,
+      "lateral_ear_angle": 82.89626194838337
+    }
+  },
+  {
+    "file": "00000063_018.json",
+    "hand_label": "very_unlikely",
+    "predicted": "very_unlikely",
+    "correct": true,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 3.144162055250164,
+      "eye_height_width_ratio": 0.7326032005750358,
+      "medial_ear_angle": 129.64791773003972,
+      "lateral_ear_angle": 76.04013306705548
+    }
+  },
+  {
+    "file": "00000361_002.json",
+    "hand_label": "likely",
+    "predicted": "very_likely",
+    "correct": false,
+    "painful_fraction": 0.75,
+    "features": {
+      "ear_tips_bases_ratio": 2.4722823575175363,
+      "eye_height_width_ratio": 0.6923173719852573,
+      "medial_ear_angle": 136.13685682527108,
+      "lateral_ear_angle": 78.68022909621283
+    }
+  },
+  {
+    "file": "00000059_015.json",
+    "hand_label": "likely",
+    "predicted": "unlikely",
+    "correct": false,
+    "painful_fraction": 0.25,
+    "features": {
+      "ear_tips_bases_ratio": 2.666865888126861,
+      "eye_height_width_ratio": 0.7621795104696433,
+      "medial_ear_angle": 137.02195599127612,
+      "lateral_ear_angle": 76.4002992035939
+    }
+  },
+  {
+    "file": "00000059_021.json",
+    "hand_label": "likely",
+    "predicted": "very_likely",
+    "correct": false,
+    "painful_fraction": 1.0,
+    "features": {
+      "ear_tips_bases_ratio": 2.4200013744170183,
+      "eye_height_width_ratio": 0.640971515096316,
+      "medial_ear_angle": 139.58516691568968,
+      "lateral_ear_angle": 74.67898775601262
+    }
+  },
+  {
+    "file": "CAT_01_00000161_018.json",
+    "hand_label": "unlikely",
+    "predicted": "very_unlikely",
+    "correct": false,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 2.842582328284749,
+      "eye_height_width_ratio": 0.8057337899362453,
+      "medial_ear_angle": 128.97322042667741,
+      "lateral_ear_angle": 83.5850148697555
+    }
+  },
+  {
+    "file": "00000310_002.json",
+    "hand_label": "very_unlikely",
+    "predicted": "very_unlikely",
+    "correct": true,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 2.766514526251542,
+      "eye_height_width_ratio": 0.8155830573616564,
+      "medial_ear_angle": 128.26987744372792,
+      "lateral_ear_angle": 82.31114610680429
+    }
+  },
+  {
+    "file": "CAT_01_00000110_001.json",
+    "hand_label": "unlikely",
+    "predicted": "very_unlikely",
+    "correct": false,
+    "painful_fraction": 0.0,
+    "features": {
+      "ear_tips_bases_ratio": 2.773392219225826,
+      "eye_height_width_ratio": 0.8551419791250463,
+      "medial_ear_angle": 126.97232444065534,
+      "lateral_ear_angle": 80.1993380815679
+    }
+  },
+  {
+    "file": "00000439_012.json",
+    "hand_label": "very_likely",
+    "predicted": "very_likely",
+    "correct": true,
+    "painful_fraction": 1.0,
+    "features": {
+      "ear_tips_bases_ratio": 2.4395931558401034,
+      "eye_height_width_ratio": 0.5705947102070583,
+      "medial_ear_angle": 139.3119020358092,
+      "lateral_ear_angle": 74.15360849583925
+    }
+  },
+  {
+    "file": "00000079_026.json",
+    "hand_label": "unlikely",
+    "predicted": "likely",
+    "correct": false,
+    "painful_fraction": 0.5,
+    "features": {
+      "ear_tips_bases_ratio": 2.5581708318076006,
+      "eye_height_width_ratio": 0.9337653264164707,
+      "medial_ear_angle": 135.6526291474408,
+      "lateral_ear_angle": 75.38083384634609
+    }
+  }
+]
