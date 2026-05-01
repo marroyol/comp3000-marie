@@ -163,7 +163,14 @@ def train_model(model, train_loader,val_loader, epochs=100):
     best_model_state = None
     epochs_without_improvement = 0
     early_stopping_patience = 10
-    
+    history = {
+        "epoch": [],
+        "train_loss": [],
+        "val_loss": [],
+        "learning_rate": [],
+        "best_val_loss": None,
+        "best_epoch": None
+    }
     if device.type == "cuda":
         print(f"Training with CUDA. Epochs = {epochs}")
 
@@ -201,13 +208,20 @@ def train_model(model, train_loader,val_loader, epochs=100):
                 running_val_loss += loss.item() * images.size(0)
 
         average_val_loss = running_val_loss / len(val_loader.dataset)
-        scheduler.step(average_val_loss)
         current_lr = optimiser.param_groups[0]["lr"]
+        scheduler.step(average_val_loss)
+
+        history["epoch"].append(epoch + 1)
+        history["train_loss"].append(average_train_loss)
+        history["val_loss"].append(average_val_loss)
+        history["learning_rate"].append(current_lr)
 
         if average_val_loss < best_val_loss:
             best_val_loss = average_val_loss
             best_model_state = copy.deepcopy(model.state_dict())
             epochs_without_improvement = 0
+            history["best_val_loss"] = average_val_loss
+            history["best_epoch"] = epoch + 1
             print("Saved the new best model state!")
         else:
             epochs_without_improvement += 1
@@ -219,7 +233,7 @@ def train_model(model, train_loader,val_loader, epochs=100):
     if best_model_state is not None:
         model.load_state_dict(best_model_state)
 
-    return model
+    return model, history
 
 def evaluate_model(model, test_loader):
     criterion = nn.SmoothL1Loss()
@@ -278,8 +292,12 @@ if __name__ == "__main__":
     print(f"Split sizes train: {len(train_dataset)}   \n"
           f"val: {len(val_dataset)} \n test: {len(test_dataset)}")
     if run_training:
-        model = train_model(model, train_loader, val_loader, epochs=50)
+        model, history = train_model(model, train_loader, val_loader, epochs=50)
         torch.save(model.state_dict(), model_path)
+
+        history_path = os.path.join(base_dir, f"training_history_{model_name}.json")
+        with open(history_path, "w") as f:
+            json.dump(history, f, indent=2)
     else:
         model.load_state_dict(torch.load(model_path, map_location=device))
         model.to(device)

@@ -16,10 +16,10 @@ model.to(device).eval()
 _to_tensor = T.ToTensor()
 
 BUCKET_DISPLAY = {
-    "very_unlikely": "Very unlikely to be in acute pain",
-    "unlikely": "Unlikely to be in acute pain",
-    "likely": "Likely to be in acute pain",
-    "very_likely": "Very likely to be in acute pain"
+    "very_unlikely": "Very unlikely to show pain-associated facial features",
+    "unlikely": "Unlikely to show pain-associated facial features",
+    "likely": "Likely to show pain-associated facial features",
+    "very_likely": "Very likely to show pain-associated facial features"
 }
 
 def _run_pipeline(image_rgb):
@@ -101,7 +101,7 @@ def analyse_cat(image):
 
 DESCRIPTION = """
 
-This is a research prototype for the University of Plymouth module COMP3000 undergraduate research dissertation. It is using a ResNet50 CNN trained on the CatFLW dataset (Martvel et al., 2023)
+This is a research prototype for the University of Plymouth module COMP3000 undergraduate research dissertation. It is using a ResNet18 CNN trained on the CatFLW dataset (Martvel et al., 2023)
 to detect feline facial landmarks, then computes four geometric features inspired by the Feline Grimace Scale (Evangelista et al., 2019) and classifies the image into one of four pain
 likelihood buckets using externally derived thresholds.
 
@@ -110,8 +110,8 @@ likelihood buckets using externally derived thresholds.
 
 DISCLAIMER = """
 
-**This tool is not a diagnostic tool! If you suspect your cat is in pain, please consult a veterinary surgeon!** Only registered veterinary surgeons can diagnose animals under teh UK Veterinary
-Surgeon Act 1966. This is a research demonstartion and may be inaccurate, especially for flat-faced breeds (Persians, Scottish Folds, and similar).
+**This tool is not a diagnostic tool! If you suspect your cat is in pain, please consult a veterinary surgeon!** Only registered veterinary surgeons can diagnose animals under the UK Veterinary
+Surgeons Act 1966. This is a research demonstration and may be inaccurate, especially for flat-faced breeds (Persians, Scottish Folds, and similar).
 """
 
 _base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -133,14 +133,14 @@ for fname in _example_filenames:
     if os.path.exists(path):
         _example_files.append([path])
 
-with gr.Blocks(title="Feline Pain Estimator") as demo:
+with gr.Blocks(title="Automated feline pain detection using facial landmarks and machine learning") as demo:
     gr.Markdown(DESCRIPTION)
     gr.Markdown(DISCLAIMER)
 
     with gr.Row():
         with gr.Column():
             input_image = gr.Image(
-                label="Upload a cat photo",
+                label="Upload a front-facing cat photo with the face cropped",
                 type="numpy",
                 height=400
             )
@@ -171,9 +171,9 @@ with gr.Blocks(title="Feline Pain Estimator") as demo:
 
     gr.Markdown(
         "---\n"
-        "Built with Gradio. ResNet50 model, CatFLW dataset, ~1.4% NME on test split. "
+        "Built with Gradio. ResNet18 model, CatFLW dataset. "
         "Pain classifier: nearest-class vote using Evangelista et al. (2019) Table 1."
     )
 
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(share=False)
