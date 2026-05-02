@@ -7,7 +7,7 @@ import torchvision.transforms as T
 import gradio as gr
 import pandas as pd
 
-from src.cat_cnn import model, device, model_path
+from src.model_loader import model, device, model_path
 from src.pain_classifier import classify_landmarks
 from src.facial_landmark_labeller import LANDMARK_INDEX_MAP
 
@@ -176,4 +176,4 @@ with gr.Blocks(title="Automated feline pain detection using facial landmarks and
     )
 
 if __name__ == "__main__":
-    demo.launch(share=False)
+    demo.launch(share=False, debug=True)
