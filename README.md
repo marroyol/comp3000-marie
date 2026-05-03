@@ -1,43 +1,119 @@
-# comp3000
-TODO: Update with current project information
-## Project Title
-Automating feline pain detection using facial analysis and machine learning
 
-## Supervisor
-Lauren Ansell
+# Me-owch! Automated feline pain detection using facial landmarks and machine learning
+*Final-year BSc Computer Science project for COMP3000 Computing Project, University of Plymouth, 2025/2026.*
 
-## Project Vision
+*Supervised by Dr. Lauren Ansell.*
 
-This Project Vision was built off Paulo Caroli’s ‘Write the Product Vision’ article. (Caroli, 2022)
+This repository contains a proof-of-concept pipeline for automated feline acute pain screening from cat face images. A ResNet-18 convolutional neural network predicts facial landmarks from a cropped cat face image. These landmarks are then used to compute Feline Grimace Scale-inspired geometric features and classify the image into one of four pain-likeklihood buckets.
 
-For anyone with a cat in their care, this project will aim to use machine learning to analyse images of cats and predict their level of acute pain.
+**Important**: This is a research prototype, not a clinical diagnostic tool. If you suspect a cat is in pain, contact a veterinary surgeon right away.
 
-Cats are highly adept at hiding their pain. (Horwitz and Rodan, 2018) Owners can fail to spot early signs of pain in their pet, missing their cat’s pain until it progresses enough that they cannot hide it as well anymore. (Gruen et al., 2022)
+## Quick Start
+The Gradio demo can be run from a fresh clone without the full CatFLW dataset.
 
-This project aims to lower the incident rate of this issue; shelters, veterinarians, and the general cat-owning public would be able to upload a photo of their cat and get an accurate reading of acute pain levels.
+### 1. Create and activate a virtual environment.
+On Windows Powershell:
+```
+py -3.13 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+Python 3.13 is recommended for a quick start. Python 3.11-3.13 should be suitable for PyTorch compatibility.
 
-In the UK, between 2016 and 2023, the average vet price has increased by 63%. (Competition and Markets Authority, 2025) Catching pain earlier can prevent an acute pain scenario from becoming a chronic (or long-lasting) pain scenario (Downing and Della Rocca, 2023), meaning the pet can spend less time (and the owner less money) at the vet. This can also prevent the heartbreaking scenario of an owner having to choose between a large debt and putting their pet down. (McNamee et al., 2025)
+### 2. Install dependencies
 
-In addition, pain can cause or worsen problematic behaviour in cats, and it is difficult to ascertain the connection between the two. (Mills et al., 2020) Problematic behaviour is one of the top reasons that cats are returned to shelters after being adopted. (Mundschau and Suchak, 2023). It is possible that if a shelter could use a pain-detecting model to check on their cats more regularly than they can get vets to check on them, they may be able to spot more painful cats, making sure to heal their condition before adopting them out. That way, the number of cats being returned to a shelter could decrease, freeing up space for other cats in need of assistance.
+```
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
 
-To understand this project, it is important to learn about the Feline Grimace Scale (FGS). It is a scale that is used to assess pain in cats by analysing small changes in their facial expression. There are 5 ‘Action Units’ (AUs) used in the FGS – ear position, orbital tightening (in other words, narrowing of the eyes), whisker change, the tension of the muzzle, and head position. (Cayetano Evangelista, 2018) These different features have a pain score corresponding to each one depending on their state, and added together, you get the pain score.
+### 3. Run the demo
 
-Below are 2 Minimum Viable Product (MVP) ideas. They cover the likely risk of a painful cat database not being obtained by Sprint 1.
+```
+python -m scr.app
+```
 
-If a suitable painful cat dataset cannot be obtained (Plan A):
-1)	Use a normal cat database.
-2)	Select Action Units (AUs) to prioritise depending on the size of the database. If it is on the smaller side (perhaps 1000 images or less), prioritise the eyes, muzzle ratio and ear angle. This is as Feline Grimace Scale (FGS) scorers had the most agreement with each other using these features. (Cayetano Evangelista, 2018) Add whiskers, head positions, and other FGS features later (post MVP). The idea behind this is that facial feature mapping can be very time-consuming and it may be unrealistic to complete the entire face by December.
-3)	Calculate and use ratios to predict painful or pain-free classification. (Cayetano Evangelista, 2018) This takes away the reliance of needing a painful database.
-4)	Later, if we get a painful cat dataset, we can use it to test the model.
+The app should run a local Gradio interface. Upload a close-up cropped cat face image, or use one of the included example images.
 
-If a suitable painful cat dataset can be obtained (Plan B):
-1)	Either do the same as above but with earlier testing against the painful cat database, OR:
-2)	Use something like a heat map CNN to highlight the areas flagged as ‘important’ to the CNN.
-3)	See if the areas flagged up by the heat map are the same areas flagged by the Feline Grimace Scale, give a predicted classification (pain-free or painful, and if possible what level on the Feline Grimace Scale), and then show the user the relevant FGS guidance to see if their analysis agrees. The idea is, if the heat map lights up areas it sees as relevant to pain in cats (like a tightened muzzle), it will flag up what has resulted in the pain score and the user can check.
+## Important disclaimer
 
-If a proof of concept of the idea can be created by March, it would be ideal to create a web app that users could test this on. 
+This project is intended to demonstrate a machine-learning pipeline for estimating whether a cat face image shows pain-associated facial features. It is designed for academic evaluation and proof-of-concept experimentation only.
 
-Realistically, this project will be a small piece of the puzzle as it is a deep and complex problem to tackle.
+It should not be used to diagnose pain, replace veterinary judgment, or make decisions about animal treatment. The model may be inaccurate, especially when images are poorly cropped, side-on, blurred, occluded, or of breeds with unusual facial morphology.
+
+## Project overview
+
+The project combines landmark detection with interpretable geometric measurements inspired by the Feline Grimace Scale.
+
+The pipeline is:
+```
+Cropped cat face image inputted
+->
+Resnet-18 landmark predictor
+->
+48 predicted facial landmarks
+->
+Geometric feature extraction
+->
+Nearest-distribution z-score voting
+->
+Pain-likelihood bucket
+```
+
+The four computed geometric features are:
+1. Ear tips-to-bases ratio
+2. Eye height-to-width ratio
+3. Medial ear angle
+4. Lateral ear angle
+
+These features are compared against published control and painful thresholds from Evangelista *et al.* (2019). Each valid feature votes for the nearest distribution. The final output bucket is based on the proportion of features voting as painful:
+
+* very_unlikely
+* unlikely
+* likely
+* very_likely
+
+## Repository structure
+## Repository structure
+```
+├── cat_model_resnet18.pt
+├── requirements.txt
+├── README.md
+├── data/
+│ └── example_crops/
+├── docs/
+├── notebooks/
+│ └── results.ipynb
+├── pain_labels/ ├── training_histories/
+└── src/
+├── app.py
+├── model_loader.py
+├── cat_cnn.py
+├── computations.py
+├── pain_classifier.py
+├── facial_landmark_labeller.py
+├── nme.py
+├── tools.py
+└── pain_labeller.py
+```
+
+### Key files
+|File or folder|Purpose|
+|---|---|
+|`src/app.py`|Gradio demo application.|
+|`src/model_loader.py`| Loads the ResNet-18 architecture and checkpoint for the demo without importing the CatFLW-dependent training script.|
+|`src/cat_cnn.py`|Dataset, training, evaluation, and model comparison code. Requires CatFLW in data/images/ and data/labels/.|
+|`src/computations.py`|Computes the four geometric features used by the pain classifier.|
+|`src/pain_classifier.py`|Converts geometric features into pain-likelihood buckets using z-score voting.|
+|`src/nme.py`|Normalised Mean Error evaluation for predicted landmarks. Requires CatFLW.|
+|`notebooks/results.ipynb`|Results and evaluation notebook. CatFLW-dependent cells are skipped when the dataset is absent.|
+|`data/example_crops/`|Example cropped cat images for the demo.|
+|`training_histories/`|Saved training histories, including comparison models where available.|
+|`pain_labels/`|Hand labelled evaluation data used for pain-classification evaluation.|
+
+## Model checkpoints
+The final demo uses `cat_model_resnet18.pt`. Only the ResNet-18 model is required to run the final Gradio application. 
+
+`cat_model_resnet50.pt` was omitted from the repository because of the file size. You can choose to train it by setting `run_training=True` and `model_name="resnet50"` in `cat_cnn.py`. Training histories are retained in `training_histories/` so ResNet-50 model behaviour such as overfitting can still be inspected.
 
 ## References
 Caroli, P. (2022) Lean Inception, martinfowler.com. Available at: https://martinfowler.com/articles/lean-inception/ (Accessed: 18 October 2025).
