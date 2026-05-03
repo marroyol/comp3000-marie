@@ -73,7 +73,6 @@ These features are compared against published control and painful thresholds fro
 * very_likely
 
 ## Repository structure
-## Repository structure
 ```
 ├── cat_model_resnet18.pt
 ├── requirements.txt
@@ -115,23 +114,127 @@ The final demo uses `cat_model_resnet18.pt`. Only the ResNet-18 model is require
 
 `cat_model_resnet50.pt` was omitted from the repository because of the file size. You can choose to train it by setting `run_training=True` and `model_name="resnet50"` in `cat_cnn.py`. Training histories are retained in `training_histories/` so ResNet-50 model behaviour such as overfitting can still be inspected.
 
+The results notebook is designed to handle missing comparison checkpoints by bringing up error messages.
+
+## Installation
+The minimal project requirements are in `requirements.txt` and include:
+* torch
+* torchvision
+* opencv-python
+* numpy
+* gradio
+* pandas
+
+To install on Windows PowerShell:
+```
+py -3.13 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+### CUDA note
+CUDA is optional. The Gradio demo can run on CPU. CUDA is mainly for faster training and evaluation. The code uses `torch.cuda.is_available()`. If CUDA is unavailable, the project falls back to CPU. 
+
+If CUDA support is required, install the CUDA-enabled PyTorch build usign the official PyTorch installation selector for your system and CUDA version.
+
+## Running the Gradio demo
+Run `python -m src.app`.
+
+The app loads cat_model resnet18.pt, predicts landmarks, computes the four gemoetric features, and displays:
+* an annotated image with predicted landmarks.
+* the final pain-likelihood bucket.
+* a per-feature table hsowing feature values, z-scores, and votes.
+
+The app does not require the full CatFLW dataset. The app imports `src/model_loader.py` instead of `src/cat_cnn.py` because `src/cat_cnn.py` sets up CatFLW paths at import time and therefore does not work without the CatFLW dataset.
+
+## Data requirements by workflow
+
+|Workflow|Requires CatFLW?|Required files/folders|Notes|
+|---|---|---|---|
+|Run Gradio demo|No|`cat_model_resnet18.pt`, `data/example_crops/`, `src/`|Works from a fresh repo clone.|
+|Use example images|No|`data/example_crops`/|Included for demonstration|
+|Pain-label evaluation|No|`pain_labels/`, `notebook.code`|Uses the hand-labelled evaluation set included in the repo.|
+|Run full landmark NME evaluation|Yes|`data/images/`, `data/labels/`| Requires  CatFLW.|
+|Run train/validation/test split checks|Yes|`data/images/`, `data/labels/`|Requires  CatFLW dataset.|
+|Compare predicted vs. ground-truth landmarks|Yes|`data/images/`, `data/labels/`|Requires  CatFLW dataset.|
+|Retrain models|Yes|`data/images/`, `data/labels/`|Requires  CatFLW dataset.|
+
+## Dataset notes
+This project uses the CatFLW dataset with 2,079 annotated cat images, 48 facial landmarks per images, and bounding boxes for face cropping. (Martvel *et. al.*, 2019)
+
+CatFLW is not included in this repository because it is a third-party dataset and very large. It is available [here](https://www.kaggle.com/datasets/georgemartvel/catflw). To reproduce the CatFLW dependent training and evalaution, place the dataset files in the data folder as follows:
+```
+data/
+├── images/
+│   └── ...
+└── labels/
+    └── ...
+```
+The helper function in `scr/tools.py` matches label filenames to images using common image extensions.
+
+## Reproducing evaluation
+
+The evaluation notebooks used throughout the dissertation have been consolidated into `notebooks/results.ipynb`. 
+
+### Using the notebook without CatFLW
+The notebook can be run without the full dataset. In this mode, CatFLW dependent NME cells are skipped, training split checks are skipped, predicted-vs-ground-truth landmark comparison is skipped, and pain-label matrics can still run where the required local files are present.
+
+### Using the notebook with CatFLW
+If CatFLW is placed in `data/images/` and `data/labels/`, then the notebook can run the full landmark evaluation workflow, including train/validation/test split checks, landmark NME evaluation, model comparison where checkpoints are available, and predicted-vs-ground-truth landmark comparisons.
+
+## Retraining models
+
+The traning code is in `src/cat_cnn.py`. To run it, the CatFLW is required to be prseent in `data/images/` and `data/labels/`. The default model is ResNet-18. The implemented models are:
+* resnet18
+* resnet50
+* efficient_netb0
+mobilenet_v3_small
+
+Training is disabled by default using `run_training = False`. To retrain, set `run_training = True` inside `src/cat_cnn.py` after ensuring CatFLW is present. CUDA is recommended for training, but the code can fall back to the CPU.
+
+## Results (summary)
+
+The final selected model is ResNet-18. Model comparison included:
+
+* ResNet-18
+* ResNet-50
+* EfficientNet-B0
+* MobileNetV3-Small
+R
+Reported ResNet-18 landmark NME (normalised with bounding box diagonal)
+
+|Region|NME|
+|---|---|
+|Overall|1.27%|
+|Ears|2.06%|
+|Eyes|0.96%|
+
+Pain-classification vealuation used a 40-image no-nexpert hand-labelled evaluation set.
+
+|Metric|Result|
+|---|---|
+|4-class accuracy|57%|
+Linear-weighted Cohen's cappa|0.53|
+|Binary accuracy|77.5%|
+|Binary Cohen's kappa|0.54|
+|Sensitivity|63.2%|
+|Specificity|90.5%|
+
+These results should be interpreted as proof-of-concept evidence, not clinical validation.
+
+## Limitations
+The main limitation is the absence of a veterinary-grade dataset containing images labelled by confirmed pain state. As a result, the final pain classifier was evaluated against non-expert hand labels rather than veterinary diagnoses.
+
+Ohter limitations include:
+* CatFLW provides facial landmarks, not pain labels.
+* The geometric features are approximations inspired by Feline Grimace Scale action units.
+* Landmark errors can propagate into ratio and angle callculations.
+* The model expects a close-up cropped cat face with eyes, ears, and muzzles visible.
+* Performance may degrade on unusual poses, occlusions, poor lighting, blurred images, or flat-faced breeds.
+* The classifier uses external published distributions and simple nearest-distribution voting rather than a clinically trained pain classifier.
+
 ## References
-Caroli, P. (2022) Lean Inception, martinfowler.com. Available at: https://martinfowler.com/articles/lean-inception/ (Accessed: 18 October 2025).
+Evangelista, M.C. et al. (2019) ‘Facial expressions of pain in cats: the development and validation of a Feline Grimace Scale’, Scientific Reports, 9(1), p. 19128. Available at: https://doi.org/10.1038/s41598-019-55693-8.
 
-Evangelista, M. (2018) ‘Facial expressions of pain in cats: development of the Feline Grimace Scale’, in ResearchGate. Available at: https://www.researchgate.net/publication/323830301_Facial_expressions_of_pain_in_cats_development_of_the_Feline_Grimace_Scale (Accessed: 13 October 2025).
-
-Competition and Markets Authority (2025) Major reforms would require vet businesses to make fundamental changes to the way they support pet owners, GOV.UK. Available at: https://www.gov.uk/government/news/major-reforms-would-require-vet-businesses-to-make-fundamental-changes-to-the-way-they-support-pet-owners (Accessed: 15 October 2025).
-
-Downing, R. and Della Rocca, G. (2023) ‘Pain in Pets: Beyond Physiology’, Animals : an Open Access Journal from MDPI, 13(3), p. 355. Available at: https://doi.org/10.3390/ani13030355.
-
-Gruen, M.E. et al. (2022) ‘2022 AAHA Pain Management Guidelines for Dogs and Cats’, Journal of the American Animal Hospital Association, 58(2), pp. 55–76. Available at: https://doi.org/10.5326/JAAHA-MS-7292.
-
-Horwitz, D.F. and Rodan, I. (2018) ‘Behavioral awareness in the feline consultation: Understanding physical and emotional health’, Journal of Feline Medicine and Surgery, 20(5), pp. 423–436. Available at: https://doi.org/10.1177/1098612X18771204.
-
-McNamee, B.S. et al. (2025) Vets should be made to publish prices, competition watchdog says, BBC News. Available at: https://www.bbc.co.uk/news/articles/c201r14z6r3o (Accessed: 15 October 2025).
-
-Mills, D.S. et al. (2020) ‘Pain and Problem Behavior in Cats and Dogs’, Animals, 10(2), p. 318. Available at: https://doi.org/10.3390/ani10020318.
-
-Mundschau, V. and Suchak, M. (2023) ‘When and Why Cats Are Returned to Shelters’, Animals : an Open Access Journal from MDPI, 13(2), p. 243. Available at: https://doi.org/10.3390/ani13020243.
-
-University of Plymouth (2025) Risk Assessment Form (RA1). University of Plymouth. Available at: https://www.psy.plymouth.ac.uk/home/Documents/RA-LinkLabs.pdf (Accessed: 13 October 2025).
+Martvel, G. et al. (2023) ‘CatFLW: Cat Facial Landmarks in the Wild Dataset’. arXiv. Available at: https://doi.org/10.48550/arXiv.2305.04232.
