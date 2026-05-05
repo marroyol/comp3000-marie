@@ -2,6 +2,8 @@ from src.facial_landmark_labeller import get_landmark_index
 from src.tools import compute_angle
 import math
 
+# Reference control/painful distributions used for z-score voting
+
 EVANGELISTA_STATS = {
     "ear_tips_bases_ratio":{
         "control_mean": 2.85, "control_sd": 0.3,
@@ -21,9 +23,8 @@ EVANGELISTA_STATS = {
     },
 }
 
-'''
-Note: Maybe consider combining these into 1 function?
-'''
+# Feature helper functions kept separate for readability
+
 def compute_ear_tip_distance(points):
     left_index = get_landmark_index("left_ear_tip")
     right_index = get_landmark_index("right_ear_tip")
@@ -55,6 +56,7 @@ def compute_ear_base_distance(points):
     return total_distance
 
 def compute_ear_tips_bases_ratio(points):
+    """Compare ear-tip spacing with inner-base spacing to describe ear position."""
     tip_distance = compute_ear_tip_distance(points)
     base_distance = compute_ear_base_distance(points)
     if base_distance == 0:
@@ -120,6 +122,7 @@ def compute_eye_lengths(points):
     return left_length, right_length
 
 def compute_eye_height_width_ratio(points):
+    """Average both eye height/width ratios to describe eye narrowing"""
     left_height, right_height = compute_eye_heights(points)
     left_width, right_width = compute_eye_lengths(points)
 
@@ -131,6 +134,7 @@ def compute_eye_height_width_ratio(points):
     return (left_ratio + right_ratio) / 2.0
 
 def compute_medial_angle(points):
+    """Average the inner-ear angles measured at each ear base"""
     left_inner_base = points[get_landmark_index("left_ear_inner_base")]
     left_inner_middle = points[get_landmark_index("left_ear_inner_middle")]
     right_inner_base = points[get_landmark_index("right_ear_inner_base")]
@@ -149,6 +153,7 @@ def compute_medial_angle(points):
     return (left_angle + right_angle) / 2.0
 
 def compute_lateral_angle(points):
+    """Compute lateral ear angle in the same orientation as the literature"""
 
     left_outer_base = points[get_landmark_index("left_ear_outer_base")]
     left_outer_middle = points[get_landmark_index("left_ear_outer_middle")]
@@ -167,9 +172,11 @@ def compute_lateral_angle(points):
         point_b=left_outer_base,
     )
     
+    # Subtraction from 180 degrees to match the lateral angle convention from literature
     return 180.0 - ((left_angle + right_angle) / 2.0)
 
 def compute_all_features(points):
+    """Return all geometric pain features from the predicted landmark points."""
     return {
         "ear_tips_bases_ratio": compute_ear_tips_bases_ratio(points),
         "eye_height_width_ratio":compute_eye_height_width_ratio(points),

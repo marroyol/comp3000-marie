@@ -5,6 +5,7 @@ from typing import Dict, List
 # ----------------
 
 # Index to string name mapping
+# Only feature-relevant landmarks are named here, but the CNN predicts all 48
 LANDMARK_INDEX_MAP: Dict[int, str] = {
     24: "left_ear_tip",
     25: "left_ear_inner_middle",
@@ -25,17 +26,6 @@ LANDMARK_INDEX_MAP: Dict[int, str] = {
     9: "right_eye_inner_corner",
     8: "right_eye_outer_corner",
 }
-
-'''
-25 inner middle left ear
-
-23 outer middle left ear
-
-28 inner middle right ear
-
-30 outer middle right ear	
-'''
-
 
 # String to index mapping
 LANDMARK_NAME_MAP: Dict[str,int] = {}

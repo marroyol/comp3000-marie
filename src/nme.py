@@ -13,6 +13,7 @@ EAR_INDICES = sorted(i for i, name in LANDMARK_INDEX_MAP.items() if "ear" in nam
 EYE_INDICES = sorted(i for i, name in LANDMARK_INDEX_MAP.items() if "eye" in name)
 
 def evaluate_nme(model, label_files, image_dir, label_dir, device, img_size=224):
+    """Compute landmark NME on labelled crops, normalised by box diagonal."""
     model.eval()
     to_tensor = T.ToTensor()
 
@@ -45,6 +46,7 @@ def evaluate_nme(model, label_files, image_dir, label_dir, device, img_size=224)
             if crop_w <=0 or crop_h <=0:
                 continue
 
+            # Bounding box diagonal makes pixel errors comparable across crop sizes
             bbox_diagonal = float(np.sqrt(crop_w ** 2 + crop_h ** 2))
 
             img_path = find_matching_image(label_file, image_dir)
@@ -61,8 +63,10 @@ def evaluate_nme(model, label_files, image_dir, label_dir, device, img_size=224)
             resized = cv2.resize(cropped, (img_size, img_size))
             image_tensor = to_tensor(resized).unsqueeze(0).to(device)
 
+            # The model predicts normalised crop coordinates as 48 x/y pairs
             pred_normalised = model(image_tensor).cpu().view(-1, 2).numpy()
 
+            #Put ground truth in the same crop-relative coordinate frame
             true_in_crop = true_landmarks.copy()
             true_in_crop[:, 0] -= x_min
             true_in_crop[:, 1] -= y_min
@@ -71,6 +75,7 @@ def evaluate_nme(model, label_files, image_dir, label_dir, device, img_size=224)
             true_normalised[:,0] /= crop_w
             true_normalised[:,1] /= crop_h
 
+            # Convert normalised error back to pixels before applying NME
             dx_px = (pred_normalised[:, 0] - true_normalised[:, 0]) * crop_w
             dy_px = (pred_normalised[:, 1] - true_normalised[:, 1]) * crop_h
             pixel_errors = np.sqrt(dx_px ** 2 + dy_px ** 2)
@@ -100,6 +105,7 @@ def evaluate_nme(model, label_files, image_dir, label_dir, device, img_size=224)
     }
 
 def print_nme_report(results, model_name=None):
+    """Print overall, grouped, and worst-landmark NME"""
     header = "NME Report"
     if model_name:
         header += f" for {model_name}"

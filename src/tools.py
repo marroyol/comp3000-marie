@@ -2,7 +2,7 @@ import os
 import math
 
 def find_matching_image(label_filename, image_dir):
-    """The json labels match the image labels so we can match them together using this function"""
+    """Find the image file corresponding to a CatFLW JSON label file"""
     base_name = os.path.splitext(label_filename)[0]
     possible_extensions = [
         ".png", ".jpg", ".jpeg", ".PNG", ".JPG", ".JPEG"
@@ -15,7 +15,7 @@ def find_matching_image(label_filename, image_dir):
     return None
 
 def compute_angle(vertex, point_a, point_b):
-    """Attempting to get angles using dot product"""
+    """Return the angle at vertex in degrees using the dot product"""
 
     vx, vy = vertex
     ax, ay = point_a
@@ -34,15 +34,7 @@ def compute_angle(vertex, point_a, point_b):
 
     cos_theta = dot_product / (norm_a * norm_b)
     cos_theta = max(-1.0, min(1.0, cos_theta)) # to prevent cos_theta crashing
-    # it's in degrees to match the literature (Evangelista)
+    # Convert to degrees to match the Evangelista et al. feature definitions
     theta = math.degrees(math.acos(cos_theta))
 
     return theta
-
-'''
-Don't think we actually need midpoints (I misinterpreted a graph) but leaving it for now just in case
-def midpoint(point_a, point_b):
-    ax, ay = point_a
-    bx, by = point_b
-    return ((ax+bx)/2.0, (ay+by/2.0))
-'''

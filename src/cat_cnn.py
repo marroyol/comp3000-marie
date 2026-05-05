@@ -18,6 +18,7 @@ image_path = os.path.join(image_dir,"paz3.png")
 model_path = os.path.join(base_dir, f"cat_model_{model_name}.pt")
 
 class CatLandmarksDataset(Dataset):
+    """Load CatFLW face crops with normalised landmark regression targets."""
     def __init__(self, image_dir, label_dir, img_size=224, augment=False, label_files=None):
         self.image_dir = image_dir
         self.label_dir = label_dir
@@ -32,7 +33,7 @@ class CatLandmarksDataset(Dataset):
             self.label_files = list(label_files)
 
         self.to_tensor = T.ToTensor()
-        # to improve training images
+        # Apply colour jitter only during training to improve robustness to lighting variation
         self.augmentation_transform = T.Compose([
             T.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2)
         ])
@@ -62,13 +63,16 @@ class CatLandmarksDataset(Dataset):
         x_max = int(x_max)
         y_max = int(y_max)
 
+        # Crop to the labelled face box so training matches close-up app input
         image_rgb = image_rgb[y_min:y_max, x_min:x_max]
 
         height, width, _ = image_rgb.shape
 
+        # Convert labels to crop-relative pixels (they start as full-image pixels)
         landmarks[:,0] -= x_min
         landmarks[:,1] -= y_min
 
+        # Normalised crop coordinates (what the CNN learns to predict)
         landmarks[:,0] /= width
         landmarks[:,1] /= height
         
@@ -78,6 +82,7 @@ class CatLandmarksDataset(Dataset):
         if self.augment:
             image_tensor = self.augmentation_transform(image_tensor)
 
+        # Flatten 48 (x,y) landmarks into the 96 regression targets
         return image_tensor, landmarks.view(-1)
 
 sample_label_file = [filename for filename in os.listdir(label_dir) if filename.endswith(".json")][0]
@@ -90,6 +95,7 @@ with open(sample_label_path, "r") as f:
 num_landmarks = len(sample_labels)
 
 def make_split_indices(dataset_size,train_ratio=0.7,val_ratio=0.15,test_ratio=0.15,seed=2):
+    """Create reproducible train/val/test split from label indices"""
     generator = torch.Generator().manual_seed(seed)
     all_indices = torch.randperm(dataset_size, generator=generator).tolist()
 
@@ -118,6 +124,7 @@ val_loader =DataLoader(val_dataset,batch_size=batch_size, shuffle=False)
 test_loader = DataLoader(test_dataset, batch_size=batch_size,shuffle=False)
 
 def get_model(model_name, num_landmarks, pretrained=True):
+    """Replace each backbone's classifier with a landmark regression head"""
     output_features = num_landmarks * 2
     if model_name == "resnet18":
         weights = models.ResNet18_Weights.DEFAULT if pretrained else None
@@ -156,6 +163,7 @@ else:
 model = get_model(model_name, num_landmarks, pretrained=True).to(device)
 
 def train_model(model, train_loader,val_loader, epochs=100):
+    """Train on landmarks/keep the state with best validation loss"""
     criterion = nn.SmoothL1Loss()
     optimiser = optim.Adam(model.parameters(), lr=1e-3)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimiser, mode="min", factor=0.1, patience=5)
@@ -236,6 +244,7 @@ def train_model(model, train_loader,val_loader, epochs=100):
     return model, history
 
 def evaluate_model(model, test_loader):
+    """Report SmoothL1 loss on held-out test split"""
     criterion = nn.SmoothL1Loss()
     model.eval()
     running_test_loss = 0.0
@@ -255,6 +264,7 @@ def evaluate_model(model, test_loader):
         return average_test_loss
 
 def predict(model, image_path, bounding_box, image_size=224):
+    """Predict landmarks for boxed image and return full-image pixel coordinates"""
     image_bgr = cv2.imread(image_path)
     if image_bgr is None:
         raise ValueError("error loading image into predict()")

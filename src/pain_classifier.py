@@ -5,12 +5,13 @@ BUCKETS = ["very_unlikely", "unlikely", "likely", "very_likely"]
 
 
 def _is_nan(x):
-
     try:
         return math.isnan(x)
     except (TypeError, ValueError):
         return False
+    
 def classify_feature(feature_name, value):
+    """Vote for the closest Evangelista control or painful distribution"""
     if _is_nan(value):
         return {
             "vote": None,
@@ -20,6 +21,7 @@ def classify_feature(feature_name, value):
         }
     
     stats = EVANGELISTA_STATS[feature_name]
+    # z-scores measure distance from each mean in standard deviations
     z_control = abs(value - stats["control_mean"]) / stats["control_sd"]
     z_painful = abs(value - stats["painful_mean"]) / stats["painful_sd"]
 
@@ -33,6 +35,7 @@ def classify_feature(feature_name, value):
     }
 
 def votes_to_bucket(painful_fraction):
+    """Map the fraction of painful feature votes onto the four display buckets"""
     if painful_fraction == 0.0:
         return "very_unlikely"
     if painful_fraction <= 0.25:
@@ -42,6 +45,7 @@ def votes_to_bucket(painful_fraction):
     return "very_likely"
 
 def classify_landmarks(points):
+    """Compute features from landmarks and combine their z-score votes"""
     features = compute_all_features(points)
     details = {name: classify_feature(name, value)
                for name, value in features.items()}
@@ -71,6 +75,7 @@ def classify_landmarks(points):
         }
 
 def explain_classification(result):
+    """Format classification result as readable text summary"""
     lines = []
     lines.append(f"Bucket: {result['bucket']}")
     if result["painful_fraction"] is not None:

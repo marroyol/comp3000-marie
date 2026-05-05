@@ -11,6 +11,7 @@ from src.model_loader import model, device, model_path
 from src.pain_classifier import classify_landmarks
 from src.facial_landmark_labeller import LANDMARK_INDEX_MAP
 
+# Load the trained landmark model once so each upload only runs inference.
 model.load_state_dict(torch.load(model_path, map_location=device))
 model.to(device).eval()
 _to_tensor = T.ToTensor()
@@ -23,17 +24,21 @@ BUCKET_DISPLAY = {
 }
 
 def _run_pipeline(image_rgb):
+    """Run image upload -> landmark prediction -> feature classification -> annotation"""
     h, w, _ = image_rgb.shape
     resized = cv2.resize(image_rgb, (224, 224))
     t = _to_tensor(resized).unsqueeze(0).to(device)
 
     with torch.no_grad():
+        # Reshape the 96 regression outputs into 48 landmark (x, y) pairs
         pred = model(t).cpu().view(-1, 2).numpy()
 
+        # Convert normalised outputs back to uploaded-image pixel coordinates
         pred_px = pred.copy()
         pred_px[:,0] *= w
         pred_px[:,1] *= h
 
+        # Classification uses the geometric features computed from pixel landmarks
         result = classify_landmarks(pred_px.tolist())
 
         annotated = image_rgb.copy()
@@ -75,6 +80,7 @@ def analyse_cat(image):
                     f" vote painful ({frac:.0%}).")
     
     rows = []
+    # These rows expose the same feature values and z-scores used for the bucket
     pretty = {
         "ear_tips_bases_ratio": "Ear tips / bases ratio",
         "eye_height_width_ratio": "Eye height / width ratio",
