@@ -42,3 +42,6 @@ src/paz3.png
 
 # ResNet-50 because it is too large
 cat_model_resnet50.pt
+
+# Old notes
+docs/
